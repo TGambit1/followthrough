@@ -7,6 +7,7 @@ type Data = {
   events: Event[];
   storage: string;
   planner: string;
+  jev?: string;
   actions: Action[];
   qualified: number;
 };
@@ -188,8 +189,8 @@ export default function Home() {
             <span>◈</span>
             <div>
               <strong>Demo environment</strong> · Fictional listings and
-              simulated dealer responses. {data?.planner || "Loading planner…"}.
-              No real messages or purchases.
+              simulated dealer responses. {data?.planner || "Loading planner…"}.{" "}
+              {data?.jev || "Rule price check"}. No real messages or purchases.
             </div>
           </div>
           {error && (
@@ -243,11 +244,13 @@ export default function Home() {
                     <h2>A reliable daily driver</h2>
                   </div>
                   <span className={`status ${m.status}`}>
-                    {m.status === "approval"
-                      ? "Needs your review"
-                      : m.status === "approved"
-                        ? "Packet approved"
-                        : m.status}
+                    {m.presentation && !m.presentation.present
+                      ? "Price withheld"
+                      : m.status === "approval"
+                        ? "Needs your review"
+                        : m.status === "approved"
+                          ? "Packet approved"
+                          : m.status}
                   </span>
                 </div>
                 <div className="brief-grid">
@@ -482,25 +485,39 @@ export default function Home() {
                     <span className="eyebrow">WHAT HAPPENS NEXT</span>
                     <div className="spark">✳</div>
                     <h3>
-                      {m.status === "approval"
-                        ? "A decision worth your attention."
-                        : m.status === "approved"
-                          ? "Ready for the real-world handoff."
-                          : m.status === "paused"
-                            ? "Your progress is safe."
-                            : m.status === "blocked"
-                              ? "Your brief comes first."
-                              : "Moving your purchase forward."}
+                      {m.presentation && !m.presentation.present
+                        ? "This price stays off your desk."
+                        : m.status === "approval"
+                          ? "A decision worth your attention."
+                          : m.status === "approved"
+                            ? "Ready for the real-world handoff."
+                            : m.status === "paused"
+                              ? "Your progress is safe."
+                              : m.status === "blocked"
+                                ? "Your brief comes first."
+                                : "Moving your purchase forward."}
                     </h3>
                     <p>
-                      {selected
-                        ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} below your current budget.`
-                        : m.status === "blocked"
-                          ? "No verified offer fits. Update your constraints to continue, or keep your current limits."
-                          : m.status === "paused"
-                            ? "Resume from the saved checkpoint, even after restarting the server."
-                            : data?.actions[0]?.label ||
-                              "Review your purchase packet."}
+                      {m.presentation && !m.presentation.present
+                        ? `${m.presentation.subject} at ${money(m.presentation.amount)} was not put up for approval.${
+                            m.presentation.source === "jev" &&
+                            m.presentation.probability !== null
+                              ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, below the ${Math.round(m.presentation.threshold * 100)}% line.`
+                              : ""
+                          }`
+                        : selected
+                          ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} below your current budget.${
+                              m.presentation?.source === "jev" &&
+                              m.presentation.probability !== null
+                                ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, so this price was presented for your decision.`
+                                : ""
+                            }`
+                          : m.status === "blocked"
+                            ? "No verified offer fits. Update your constraints to continue, or keep your current limits."
+                            : m.status === "paused"
+                              ? "Resume from the saved checkpoint, even after restarting the server."
+                              : data?.actions[0]?.label ||
+                                "Review your purchase packet."}
                     </p>
                     {m.status === "active" && (
                       <>

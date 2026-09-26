@@ -43,6 +43,8 @@ Reference: https://www.mongodb.com/docs/atlas/connect-to-database-deployment/
 5. Keep `MODEL_BASE_URL=https://openrouter.ai/api/v1` or use a compatible provider endpoint.
 6. Restart the app and worker. Confirm the dashboard says **Model planner**.
 
+To let Jev decide whether a price is acceptable to present, create a key at https://thejevai.com/settings/apikeys and set `JEV_API_KEY`. The dashboard then says **Jev price check**. Jev returns a yes-probability; the app presents the price only at 0.50 or above. Private limits, required terms, and final approval stay in code. Without the key, an in-limit price is presented by rule and the dashboard says **Rule price check**.
+
 The planner chooses among currently eligible tools and explains the next action. The harness validates its output before executing the simulated tool and committing the result. Model errors are visible and do not silently fall back to deterministic mode. Credentials are read server-side only.
 
 Reference: https://openrouter.ai/docs/quickstart

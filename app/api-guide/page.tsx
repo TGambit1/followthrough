@@ -72,7 +72,8 @@ export default function ApiGuide() {
           </li>
           <li>
             Call <strong>next</strong> again. It creates the next counter, a due
-            follow-up, or a decision for your approval.
+            follow-up, or asks Jev whether the price is acceptable to present
+            for your approval.
           </li>
         </ol>
         <p>
@@ -87,7 +88,8 @@ export default function ApiGuide() {
           We ask for itemized charges, counter below the buying target or above
           the selling target, and hold the counter during silence. Price changes
           feed per-tactic outcome metrics. Limits, deadlines, and missing
-          required terms block automatic acceptance.
+          required terms block automatic acceptance. Jev only decides whether
+          an in-limit price is worth showing you; you still approve it.
         </p>
         <p>
           The API returns drafts for your integration to deliver. No email,
