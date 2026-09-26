@@ -1,7 +1,8 @@
 import "./globals.css";
 export const metadata = {
-  title: "Followthrough — Big decisions. Carried through.",
-  description: "A durable agent for the journey from intent to purchase.",
+  title: "Saprano — Tony's motor sit-down",
+  description:
+    "A North Jersey sit-down for the car you want, at the number you named.",
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

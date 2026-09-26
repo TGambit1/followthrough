@@ -18,11 +18,11 @@ const money = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n);
 const stages = [
-  "Discover",
-  "Collect quotes",
-  "Verify",
-  "Negotiate",
-  "Your decision",
+  "Scout the lot",
+  "Get it in writing",
+  "Check the title",
+  "The sit-down",
+  "Your call",
 ];
 export default function Home() {
   const [data, setData] = useState<Data | null>(null),
@@ -120,37 +120,38 @@ export default function Home() {
     <div className="shell">
       <aside className="sidebar">
         <a href="/" className="brand">
-          <span className="brandmark">↗</span> followthrough
-          <span className="brand-dot">.</span>
+          <span className="brandmark">TS</span> Saprano
         </a>
-        <div className="side-caption">YOUR AMBITION, IN MOTION</div>
+        <div className="side-caption">Tony’s motor sit-down</div>
         <nav>
           <a className="api-nav" href="/api-guide">
-            ↗ Negotiation API
+            House rules
           </a>
-          <button className="nav-active" onClick={() => setTab("journey")}>
-            <span>◉</span> Purchase mission <span className="nav-count">1</span>
+          <button
+            className={tab === "journey" ? "nav-active" : ""}
+            onClick={() => setTab("journey")}
+          >
+            <span>◆</span> The sit-down <span className="nav-count">1</span>
           </button>
-          <button onClick={() => setTab("memory")}>
-            <span>▤</span> Durable memory
+          <button
+            className={tab === "memory" ? "nav-active" : ""}
+            onClick={() => setTab("memory")}
+          >
+            <span>▣</span> The books
           </button>
         </nav>
         <div className="side-card">
-          <span className="eyebrow">BUILT TO KEEP GOING</span>
-          <h3>
-            Life takes longer
-            <br />
-            than a context window.
-          </h3>
-          <p>Your goal, evidence, and next step travel together.</p>
+          <span className="eyebrow">FROM THE BACK ROOM</span>
+          <h3>A boss doesn’t settle.</h3>
+          <p>You name the number. We stay at the table until the price respects it.</p>
           <div className="orbit">
-            <div>↗</div>
+            <div>TS</div>
           </div>
         </div>
         <div className="side-bottom">
-          <span className="avatar">Y</span>
+          <span className="avatar">TS</span>
           <div>
-            Your workspace<small>Hackathon prototype</small>
+            Tony’s office<small>North Jersey</small>
           </div>
           <span className="tiny-dot" />
         </div>
@@ -158,7 +159,7 @@ export default function Home() {
       <main>
         <header className="topbar">
           <span>
-            Workspace <b>/</b> Car purchase
+            Saprano <b>/</b> The lot
           </span>
           <div className="top-status">
             <span className="tiny-dot" />
@@ -168,27 +169,26 @@ export default function Home() {
         <div className="content">
           <div className="title-row">
             <div>
-              <span className="eyebrow">YOUR PRICE. YOUR TERMS.</span>
+              <span className="eyebrow">THE NUMBER STAYS IN THE ROOM</span>
               <h1>
                 Your next car.
-                <br />
-                <span>Negotiated. Not settled for.</span>
+                <span>Negotiated like a sit-down.</span>
               </h1>
               <p className="subtitle">
-                Firm counters. Persistent follow-ups. A ceiling we keep to
-                ourselves.
+                Firm counters. We follow up. The ceiling never leaves this
+                office.
               </p>
             </div>
             <div className="mission-tag">
               <span className="tiny-dot" />
-              {m ? `DAY ${m.day} OF THE JOURNEY` : "READY WHEN YOU ARE"}
+              {m ? `DAY ${m.day} AT THE TABLE` : "THE TABLE IS SET"}
               <small>Accelerated simulation</small>
             </div>
           </div>
           <div className="disclosure">
             <span>◈</span>
             <div>
-              <strong>Demo environment</strong> · Fictional listings and
+              <strong>Back-room demo</strong> · Fictional listings and
               simulated dealer responses. {data?.planner || "Loading planner…"}.{" "}
               {data?.jev || "Rule price check"}. No real messages or purchases.
             </div>
@@ -208,58 +208,64 @@ export default function Home() {
           )}
           {!m ? (
             <section className="welcome">
-              <div className="welcome-symbol">↗</div>
-              <span className="eyebrow">START WITH THE OUTCOME</span>
+              <div className="welcome-symbol">TS</div>
+              <span className="eyebrow">TONY NAMES THE TERMS</span>
               <h2>
-                “Find me a reliable car.
+                “Find me a clean car.
                 <br />
-                Keep the whole purchase under $32,000.”
+                Keep the whole thing under $32,000.”
               </h2>
               <p>
-                Followthrough collects comparable offers, follows up on fees,
-                checks the evidence, and brings the decision back to you.
+                We pull comparable offers, chase the fees, check the title, and
+                bring the packet back for your blessing.
               </p>
               <button
                 className="primary"
                 disabled={busy || !data}
                 onClick={() => command("create")}
               >
-                {busy ? "Creating your mission…" : "Start purchase mission"}{" "}
-                <span>↗</span>
+                {busy ? "Setting the table…" : "Open the sit-down"}{" "}
+                <span>→</span>
               </button>
               <div className="welcome-details">
-                Clean title required <span>·</span> Under 40,000 miles{" "}
-                <span>·</span> You approve the decision
+                Clean title or we walk <span>·</span> Under 40,000 miles{" "}
+                <span>·</span> You make the call
               </div>
             </section>
           ) : (
             <>
               <section className="mission-card">
                 <div className="mission-heading">
-                  <div className="car-icon">↗</div>
+                  <div className="car-icon">TS</div>
                   <div>
                     <span className="eyebrow">
-                      ACTIVE PURCHASE BRIEF · V{m.version}
+                      THE BRIEF · V{m.version}
                     </span>
-                    <h2>A reliable daily driver</h2>
+                    <h2>A daily driver. No stories.</h2>
                   </div>
                   <span className={`status ${m.status}`}>
                     {m.presentation && !m.presentation.present
-                      ? "Price withheld"
+                      ? "Kept off the table"
                       : m.status === "approval"
-                        ? "Needs your review"
+                        ? "Your call"
                         : m.status === "approved"
-                          ? "Packet approved"
-                          : m.status}
+                          ? "Blessed"
+                          : m.status === "active"
+                            ? "In play"
+                            : m.status === "paused"
+                              ? "On ice"
+                              : m.status === "blocked"
+                                ? "Dead end"
+                                : m.status}
                   </span>
                 </div>
                 <div className="brief-grid">
                   <div>
-                    <span>PRIVATE CEILING</span>
+                    <span>THE CEILING</span>
                     <strong>{money(m.budget)}</strong>
                   </div>
                   <div>
-                    <span>MILEAGE LIMIT</span>
+                    <span>MILEAGE CAP</span>
                     <strong>
                       {m.maxMiles.toLocaleString()} <small>mi</small>
                     </strong>
@@ -289,31 +295,31 @@ export default function Home() {
               </section>
               <div className="metric-grid">
                 <div>
-                  <span>COMPLETED ACTIONS</span>
+                  <span>MOVES MADE</span>
                   <strong>
                     {m.steps}
-                    <small> saved to memory</small>
+                    <small> written in the books</small>
                   </strong>
                 </div>
                 <div>
-                  <span>NEGOTIATED REDUCTION</span>
+                  <span>OFF THE TOP</span>
                   <strong>
                     {money(m.learning.totalReduction)}
-                    <small> across all offers</small>
+                    <small> across the table</small>
                   </strong>
                 </div>
                 <div>
-                  <span>QUALIFIED OFFERS</span>
+                  <span>CARS THAT QUALIFY</span>
                   <strong>
                     {data?.qualified}
-                    <small> meet current brief</small>
+                    <small> fit the brief</small>
                   </strong>
                 </div>
                 <div>
-                  <span>CHECKPOINT</span>
+                  <span>THE BOOKS</span>
                   <strong>
                     v{m.version}
-                    <small> persisted</small>
+                    <small> on the record</small>
                   </strong>
                 </div>
               </div>
@@ -325,17 +331,17 @@ export default function Home() {
                         className={tab === "journey" ? "selected" : ""}
                         onClick={() => setTab("journey")}
                       >
-                        The journey
+                        The table
                       </button>
                       <button
                         className={tab === "memory" ? "selected" : ""}
                         onClick={() => setTab("memory")}
                       >
-                        Working memory
+                        The books
                       </button>
                     </div>
                     <span className="small-label">
-                      {m.offers.length} offers tracked
+                      {m.offers.length} cars on the sheet
                     </span>
                   </div>
                   {tab === "journey" ? (
@@ -347,13 +353,12 @@ export default function Home() {
                             className={`offer ${o.id === m.selected ? "chosen" : ""}`}
                           >
                             <div className="offer-top">
-                              <div className="vehicle-glyph">⌁</div>
+                              <div className="vehicle-glyph">LOT</div>
                               <div>
                                 <span className="dealer">{o.dealer}</span>
                                 <h3>{o.car}</h3>
                                 <p>
-                                  {o.miles.toLocaleString()} miles · Synthetic
-                                  listing
+                                  {o.miles.toLocaleString()} miles · On the lot
                                 </p>
                               </div>
                               <div className="price">
@@ -362,8 +367,8 @@ export default function Home() {
                                 </strong>
                                 <small>
                                   {o.total
-                                    ? "all-in quoted"
-                                    : "advertised only"}
+                                    ? "all-in, in writing"
+                                    : "sticker only"}
                                 </small>
                               </div>
                             </div>
@@ -377,19 +382,19 @@ export default function Home() {
                               >
                                 {o.verified
                                   ? o.cleanTitle
-                                    ? "✓ Clean title verified"
-                                    : "✕ Branded title — excluded"
+                                    ? "✓ Title’s clean"
+                                    : "✕ Branded title — we walk"
                                   : o.negotiated
-                                    ? "Revised quote received"
+                                    ? "They came back with a number"
                                     : o.quoted
-                                      ? "Written quote received"
-                                      : "Awaiting itemized quote"}
+                                      ? "It’s in writing"
+                                      : "Waiting on the itemized"}
                               </span>
                               {o.total !== undefined && o.total > m.budget && (
-                                <span className="bad">Over current budget</span>
+                                <span className="bad">Over the ceiling</span>
                               )}
                               {o.id === m.selected && (
-                                <span className="winner">Recommended</span>
+                                <span className="winner">The one</span>
                               )}
                             </div>
                             <NegotiationCard
@@ -398,21 +403,20 @@ export default function Home() {
                               day={m.day}
                             />
                             <details>
-                              <summary>View evidence</summary>
+                              <summary>See the paperwork</summary>
                               <p>{o.evidence}</p>
                             </details>
                           </article>
                         ))}
                         {!m.offers.length && (
                           <div className="empty">
-                            Your shortlist will appear after the agent discovers
-                            matching cars.
+                            The sheet fills in once we scout cars that fit the brief.
                           </div>
                         )}
                       </div>
                       <div className="section-title">
-                        <h3>Every step, remembered.</h3>
-                        <span>Latest 30 events</span>
+                        <h3>Every move, on the record.</h3>
+                        <span>Latest 30 entries</span>
                       </div>
                       <div className="timeline">
                         {data?.events.map((e) => (
@@ -432,49 +436,48 @@ export default function Home() {
                   ) : (
                     <div className="memory">
                       <span className="eyebrow">
-                        BOUNDED CONTEXT · DURABLE HISTORY
+                        WHAT WE KEEP AT THE TABLE
                       </span>
-                      <h3>The agent carries the essentials.</h3>
+                      <h3>The books hold the essentials.</h3>
                       <p>
-                        Each decision receives the latest purchase brief, three
-                        offer records, and aggregate feedback. The full event
-                        history stays in storage.
+                        Each move gets the latest brief, three cars, and the
+                        running tally. The full history stays in the back.
                       </p>
                       <dl>
-                        <dt>Current goal</dt>
+                        <dt>The goal</dt>
                         <dd>
                           Clean-title car, at most {money(m.budget)} all-in, at
                           most {m.maxMiles.toLocaleString()} miles.
                         </dd>
-                        <dt>Learned negotiation policy</dt>
+                        <dt>How we negotiate</dt>
                         <dd>
                           {m.learning.itemizedFirst
                             ? "Ask for itemized fees and removal of optional add-ons. Triggered by a measured advertised-to-total price gap."
                             : "Collect written totals before comparing offers."}
                         </dd>
-                        <dt>Negotiation target</dt>
+                        <dt>Our number</dt>
                         <dd>
                           {money(m.policy?.targetTotal ?? 28000)} · up to{" "}
                           {m.policy?.maxRounds ?? 4} rounds per dealer ·
-                          deadline day {m.policy?.deadlineDay ?? 14}. Counters
-                          do not reveal the ceiling.
+                          deadline day {m.policy?.deadlineDay ?? 14}.                           Counters
+                          never show the ceiling.
                         </dd>
-                        <dt>Hard feedback</dt>
+                        <dt>What the table taught us</dt>
                         <dd>
                           {m.learning.observations} negotiation outcomes;{" "}
                           {money(m.learning.totalReduction)} aggregate reduction
                           across quotes.
                         </dd>
-                        <dt>Last decision</dt>
+                        <dt>Last word</dt>
                         <dd>{m.lastDecision}</dd>
-                        <dt>Model tokens reported</dt>
+                        <dt>Words on the wire</dt>
                         <dd>
                           {m.tokens.toLocaleString()} · {data?.planner}
                         </dd>
-                        <dt>Scope of the evidence</dt>
+                        <dt>What this is</dt>
                         <dd>
-                          Small synthetic scenario. No billion-token or real
-                          multiday run is claimed.
+                          A small simulated sit-down. No billion-token run, and
+                          nobody actually bought a car.
                         </dd>
                       </dl>
                     </div>
@@ -482,42 +485,42 @@ export default function Home() {
                 </section>
                 <aside className="right-column">
                   <section className="next-card">
-                    <span className="eyebrow">WHAT HAPPENS NEXT</span>
-                    <div className="spark">✳</div>
+                    <span className="eyebrow">NEXT MOVE</span>
+                    <div className="spark">THE TABLE</div>
                     <h3>
                       {m.presentation && !m.presentation.present
-                        ? "This price stays off your desk."
+                        ? "This number never reaches your desk."
                         : m.status === "approval"
-                          ? "A decision worth your attention."
+                          ? "This one needs your blessing."
                           : m.status === "approved"
-                            ? "Ready for the real-world handoff."
+                            ? "The packet is blessed."
                             : m.status === "paused"
-                              ? "Your progress is safe."
+                              ? "We’re on ice. The books are safe."
                               : m.status === "blocked"
-                                ? "Your brief comes first."
-                                : "Moving your purchase forward."}
+                                ? "Nothing on the lot fits."
+                                : "We keep working the number."}
                     </h3>
                     <p>
                       {m.presentation && !m.presentation.present
-                        ? `${m.presentation.subject} at ${money(m.presentation.amount)} was not put up for approval.${
+                        ? `${m.presentation.subject} at ${money(m.presentation.amount)} was kept off the table.${
                             m.presentation.source === "jev" &&
                             m.presentation.probability !== null
                               ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, below the ${Math.round(m.presentation.threshold * 100)}% line.`
                               : ""
                           }`
                         : selected
-                          ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} below your current budget.${
+                          ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} under the ceiling.${
                               m.presentation?.source === "jev" &&
                               m.presentation.probability !== null
-                                ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, so this price was presented for your decision.`
+                                ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, so it comes to you for a decision.`
                                 : ""
                             }`
                           : m.status === "blocked"
-                            ? "No verified offer fits. Update your constraints to continue, or keep your current limits."
+                            ? "No clean offer fits. Change the terms, or hold the line."
                             : m.status === "paused"
-                              ? "Resume from the saved checkpoint, even after restarting the server."
+                              ? "Pick it up from the books, even after the office goes dark."
                               : data?.actions[0]?.label ||
-                                "Review your purchase packet."}
+                                "Look over the packet."}
                     </p>
                     {m.status === "active" && (
                       <>
@@ -526,14 +529,15 @@ export default function Home() {
                           disabled={busy}
                           onClick={() => command("step")}
                         >
-                          {busy ? "Working…" : "Run next step"} <span>→</span>
+                          {busy ? "Working the room…" : "Make the next move"}{" "}
+                          <span>→</span>
                         </button>
                         <button
                           className="secondary"
                           disabled={busy}
                           onClick={() => setAuto(!auto)}
                         >
-                          {auto ? "Stop autoplay" : "Autoplay demo"}
+                          {auto ? "Hold it" : "Let it ride"}
                         </button>
                         <button
                           className="text-button"
@@ -543,7 +547,7 @@ export default function Home() {
                             void command("pause");
                           }}
                         >
-                          Ⅱ Pause at checkpoint
+                          Put it on ice
                         </button>
                       </>
                     )}
@@ -553,7 +557,7 @@ export default function Home() {
                         disabled={busy}
                         onClick={() => command("resume")}
                       >
-                        Resume mission ↗
+                        Back to the table →
                       </button>
                     )}
                     {m.status === "approval" && (
@@ -562,28 +566,28 @@ export default function Home() {
                         disabled={busy}
                         onClick={() => command("approve")}
                       >
-                        Approve demo packet ✓
+                        Bless the packet ✓
                       </button>
                     )}
                     {m.status === "approved" && (
                       <p className="approved-note">
-                        ✓ Your review is recorded. No purchase or payment has
-                        been executed.
+                        ✓ Your blessing is on the books. Nobody bought a car,
+                        and nobody paid.
                       </p>
                     )}
                     <div className="next-foot">
                       {busy
-                        ? "Committing the next checkpoint…"
-                        : `Last saved ${new Date(m.updated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+                        ? "Writing it in the books…"
+                        : `Last entry ${new Date(m.updated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
                     </div>
                   </section>
                   <section className="constraints">
                     <span className="eyebrow">
-                      PLANS CHANGE. MEMORY FOLLOWS.
+                      TERMS CAN CHANGE
                     </span>
-                    <h3>Update the brief</h3>
+                    <h3>Revise the brief</h3>
                     <label>
-                      Private ceiling ($)
+                      The ceiling ($)
                       <input
                         type="number"
                         min="10000"
@@ -593,7 +597,7 @@ export default function Home() {
                       />
                     </label>
                     <label>
-                      Target price ($)
+                      Our number ($)
                       <input
                         type="number"
                         min="5000"
@@ -603,7 +607,7 @@ export default function Home() {
                       />
                     </label>
                     <label>
-                      Counteroffer rounds per dealer
+                      Rounds at the table
                       <input
                         type="number"
                         min="1"
@@ -635,28 +639,29 @@ export default function Home() {
                         });
                       }}
                     >
-                      Save & re-evaluate
+                      Save the new terms
                     </button>
                     <p>
-                      Ceiling stays private. Target guides counters. Changes
-                      cancel pending simulated counters and invalidate earlier
-                      approval.
+                      The ceiling stays private. Our number guides the
+                      counters. A change wipes pending replies and any earlier
+                      blessing.
                     </p>
                   </section>
                   <section className="proof">
                     <span>◈</span>
                     <div>
-                      <strong>Built for the long run</strong>
+                      <strong>The books don’t close</strong>
                       <p>
-                        Versioned checkpoints. Persistent evidence. A separate
-                        worker can run without this page open.
+                        Every move is versioned. The paperwork stays. A
+                        separate worker keeps the sit-down going with this page
+                        shut.
                       </p>
                     </div>
                   </section>
                 </aside>
               </div>
               <footer>
-                <span>FOLLOWTHROUGH · LONG HORIZON ENGINEERING</span>
+                <span>SAPRANO · NORTH JERSEY MOTOR SIT-DOWN</span>
                 <button
                   disabled={busy}
                   onClick={() => {
@@ -664,7 +669,7 @@ export default function Home() {
                     void command("create");
                   }}
                 >
-                  Start a new demo ↗
+                  Start another sit-down →
                 </button>
               </footer>
             </>
