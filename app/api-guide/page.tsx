@@ -9,6 +9,7 @@ Content-Type: application/json
   "spec": {
     "subject": "Annual software renewal, same seats and term",
     "counterparty": "Your vendor",
+    "onBehalfOf": "Jordan Lee",
     "direction": "minimize",
     "currency": "USD",
     "initialOffer": 15000,
@@ -24,15 +25,16 @@ export default function ApiGuide() {
   return (
     <main className="api-guide">
       <Link href="/">← Back to the car negotiation demo</Link>
-      <span className="eyebrow">FOLLOWTHROUGH · NEGOTIATION API</span>
+      <span className="eyebrow">TONY · NEGOTIATION API FOR PERSONAL ASSISTANTS</span>
       <h1>
         Your goal.
         <br />
         <span>Our persistence.</span>
       </h1>
       <p className="subtitle">
-        Connect your app to a negotiator that remembers the counter, follows up,
-        and knows when to walk away.
+        Give your personal assistant a negotiator. Tony remembers the counter,
+        follows up, and knows when to walk away, so your assistant gets its
+        person the best deal.
       </p>
       <div className="api-cases">
         <span>Cars & equipment</span>
@@ -44,7 +46,7 @@ export default function ApiGuide() {
         <h2>One key. A durable negotiation.</h2>
         <p>
           Use the separate <code>NEGOTIATION_API_KEY</code> stored on your
-          server. Your OpenRouter key stays inside Followthrough. The API
+          server. Your OpenRouter key stays inside Tony. The API
           supports a numeric price on a consistent basis plus required terms,
           with either lower or higher as the goal.
         </p>

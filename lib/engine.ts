@@ -491,7 +491,7 @@ export function advance(
         : "Walk away: no offer fits your limits";
       detail = best
         ? `${best.car}: $${best.total!.toLocaleString()} all-in. ${best.total! <= p.targetTotal ? "Negotiation target reached." : `Still $${(best.total! - p.targetTotal).toLocaleString()} above target; no automatic acceptance.`} You decide whether to proceed. No real dealer has been contacted.`
-        : "No current verified offer fits your private ceiling and mileage limit. The agent will not raise your limits to manufacture a deal.";
+        : "No current verified offer fits your private ceiling and mileage limit. Tony will not raise your limits to manufacture a deal.";
       break;
     }
   }

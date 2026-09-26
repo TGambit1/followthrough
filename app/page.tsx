@@ -119,10 +119,10 @@ export default function Home() {
     <div className="shell">
       <aside className="sidebar">
         <a href="/" className="brand">
-          <span className="brandmark">↗</span> followthrough
+          <span className="brandmark">↗</span> tony
           <span className="brand-dot">.</span>
         </a>
-        <div className="side-caption">YOUR AMBITION, IN MOTION</div>
+        <div className="side-caption">THE DEAL AGENT FOR ASSISTANTS</div>
         <nav>
           <a className="api-nav" href="/api-guide">
             ↗ Negotiation API
@@ -215,7 +215,7 @@ export default function Home() {
                 Keep the whole purchase under $32,000.”
               </h2>
               <p>
-                Followthrough collects comparable offers, follows up on fees,
+                Tony collects comparable offers, follows up on fees,
                 checks the evidence, and brings the decision back to you.
               </p>
               <button
@@ -402,7 +402,7 @@ export default function Home() {
                         ))}
                         {!m.offers.length && (
                           <div className="empty">
-                            Your shortlist will appear after the agent discovers
+                            Your shortlist will appear after Tony discovers
                             matching cars.
                           </div>
                         )}
@@ -431,7 +431,7 @@ export default function Home() {
                       <span className="eyebrow">
                         BOUNDED CONTEXT · DURABLE HISTORY
                       </span>
-                      <h3>The agent carries the essentials.</h3>
+                      <h3>Tony carries the essentials.</h3>
                       <p>
                         Each decision receives the latest purchase brief, three
                         offer records, and aggregate feedback. The full event
@@ -639,7 +639,7 @@ export default function Home() {
                 </aside>
               </div>
               <footer>
-                <span>FOLLOWTHROUGH · LONG HORIZON ENGINEERING</span>
+                <span>TONY · LONG HORIZON ENGINEERING</span>
                 <button
                   disabled={busy}
                   onClick={() => {

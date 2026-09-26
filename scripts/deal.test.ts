@@ -158,3 +158,21 @@ test("invalid limits, stale reply references and expired approval are rejected",
     commandDeal(ready, { command: "approve" }, new Date("2026-10-10")),
   );
 });
+test("drafts introduce Tony and the represented principal", () => {
+  const d = nextDeal(make(), decision, now)!.deal;
+  assert.match(
+    d.pending!.text,
+    /^This is Tony, negotiating on behalf of my client\. /,
+  );
+  const named = createDeal(
+    "named",
+    validateSpec({ ...make().spec, onBehalfOf: "Jordan Lee" }, now),
+    now,
+  );
+  const draft = nextDeal(named, decision, now)!.deal.pending!;
+  assert.match(
+    draft.text,
+    /^This is Tony, negotiating on behalf of Jordan Lee\. /,
+  );
+  assert.throws(() => validateSpec({ ...make().spec, onBehalfOf: "" }, now));
+});

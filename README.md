@@ -1,6 +1,6 @@
-# Followthrough
+# Tony
 
-A durable purchase agent that carries a car-buying goal through discovery, itemized quotes, negotiation, verification, and human review.
+Tony is the deal agent for personal assistants. An assistant calls Tony's negotiation API with its person's target, private walk-away limit and required terms; Tony carries the negotiation through counters, follow-ups and interruptions, and brings the final decision back for approval. The included car demo shows Tony taking a car-buying goal through discovery, itemized quotes, negotiation, verification, and human review.
 
 Built for the Long Horizon Engineering track. This original prototype uses fictional cars and simulated dealer responses. It does not contact dealers, execute payments, sign contracts, or buy a vehicle.
 
