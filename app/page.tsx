@@ -7,6 +7,7 @@ type Data = {
   events: Event[];
   storage: string;
   planner: string;
+  jev?: string;
   actions: Action[];
   qualified: number;
 };
@@ -188,8 +189,8 @@ export default function Home() {
             <span>◈</span>
             <div>
               <strong>Back-room demo</strong> · Fictional listings and
-              simulated dealer responses. {data?.planner || "Loading planner…"}.
-              No real messages or purchases.
+              simulated dealer responses. {data?.planner || "Loading planner…"}.{" "}
+              {data?.jev || "Rule price check"}. No real messages or purchases.
             </div>
           </div>
           {error && (
@@ -243,17 +244,19 @@ export default function Home() {
                     <h2>A daily driver. No stories.</h2>
                   </div>
                   <span className={`status ${m.status}`}>
-                    {m.status === "approval"
-                      ? "Your call"
-                      : m.status === "approved"
-                        ? "Blessed"
-                        : m.status === "active"
-                          ? "In play"
-                          : m.status === "paused"
-                            ? "On ice"
-                            : m.status === "blocked"
-                              ? "Dead end"
-                              : m.status}
+                    {m.presentation && !m.presentation.present
+                      ? "Kept off the table"
+                      : m.status === "approval"
+                        ? "Your call"
+                        : m.status === "approved"
+                          ? "Blessed"
+                          : m.status === "active"
+                            ? "In play"
+                            : m.status === "paused"
+                              ? "On ice"
+                              : m.status === "blocked"
+                                ? "Dead end"
+                                : m.status}
                   </span>
                 </div>
                 <div className="brief-grid">
@@ -485,25 +488,39 @@ export default function Home() {
                     <span className="eyebrow">NEXT MOVE</span>
                     <div className="spark">THE TABLE</div>
                     <h3>
-                      {m.status === "approval"
-                        ? "This one needs your blessing."
-                        : m.status === "approved"
-                          ? "The packet is blessed."
-                          : m.status === "paused"
-                            ? "We’re on ice. The books are safe."
-                            : m.status === "blocked"
-                              ? "Nothing on the lot fits."
-                              : "We keep working the number."}
+                      {m.presentation && !m.presentation.present
+                        ? "This number never reaches your desk."
+                        : m.status === "approval"
+                          ? "This one needs your blessing."
+                          : m.status === "approved"
+                            ? "The packet is blessed."
+                            : m.status === "paused"
+                              ? "We’re on ice. The books are safe."
+                              : m.status === "blocked"
+                                ? "Nothing on the lot fits."
+                                : "We keep working the number."}
                     </h3>
                     <p>
-                      {selected
-                        ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} under the ceiling.`
-                        : m.status === "blocked"
-                          ? "No clean offer fits. Change the terms, or hold the line."
-                          : m.status === "paused"
-                            ? "Pick it up from the books, even after the office goes dark."
-                            : data?.actions[0]?.label ||
-                              "Look over the packet."}
+                      {m.presentation && !m.presentation.present
+                        ? `${m.presentation.subject} at ${money(m.presentation.amount)} was kept off the table.${
+                            m.presentation.source === "jev" &&
+                            m.presentation.probability !== null
+                              ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, below the ${Math.round(m.presentation.threshold * 100)}% line.`
+                              : ""
+                          }`
+                        : selected
+                          ? `${selected.car} at ${money(selected.total!)} all-in. ${money(m.budget - selected.total!)} under the ceiling.${
+                              m.presentation?.source === "jev" &&
+                              m.presentation.probability !== null
+                                ? ` Jev’s yes-probability was ${Math.round(m.presentation.probability * 100)}%, so it comes to you for a decision.`
+                                : ""
+                            }`
+                          : m.status === "blocked"
+                            ? "No clean offer fits. Change the terms, or hold the line."
+                            : m.status === "paused"
+                              ? "Pick it up from the books, even after the office goes dark."
+                              : data?.actions[0]?.label ||
+                                "Look over the packet."}
                     </p>
                     {m.status === "active" && (
                       <>

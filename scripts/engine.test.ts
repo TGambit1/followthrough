@@ -142,6 +142,36 @@ test("mileage changes exclude unsuitable cars", () => {
   m = finish(m).m;
   assert.equal(m.status, "blocked");
 });
+test("Jev withholds an eligible price from approval", () => {
+  let m = createMission("test");
+  m.policy!.targetTotal = 20000;
+  m.policy!.maxRounds = 1;
+  for (let i = 0; i < MAX_STEPS && actions(m)[0]?.kind !== "decide"; i++)
+    m = step(m).mission;
+  assert.equal(actions(m)[0].kind, "decide");
+  const withheld = advance(m, actions(m)[0], "Review", {
+    source: "jev",
+    present: false,
+    probability: 0.12,
+    threshold: 0.5,
+    inputTokens: 30,
+  });
+  assert.equal(withheld.mission.status, "blocked");
+  assert.equal(withheld.mission.selected, undefined);
+  assert.equal(withheld.mission.presentation?.present, false);
+  assert.match(withheld.event.detail, /not presented/);
+  assert.throws(() => edit(withheld.mission, "approve"));
+  const shown = advance(m, actions(m)[0], "Review", {
+    source: "jev",
+    present: true,
+    probability: 0.84,
+    model: "jev-latest",
+    threshold: 0.5,
+    inputTokens: 28,
+  });
+  assert.equal(shown.mission.status, "approval");
+  assert.match(shown.event.detail, /presented for your decision/);
+});
 test("approval records packet approval only", () => {
   const { m } = finish(createMission("test"));
   const r = edit(m, "approve");

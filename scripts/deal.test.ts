@@ -135,6 +135,62 @@ test("pause and resume retain pending deadlines", () => {
   assert.equal(d.status, "awaiting_reply");
   assert.equal(d.pending!.nextFollowUpAt, due);
 });
+const jevNo = {
+  source: "jev" as const,
+  present: false,
+  probability: 0.22,
+  model: "jev-latest",
+  threshold: 0.5,
+  inputTokens: 40,
+};
+test("Jev yes presents a target price and Jev no keeps negotiating", () => {
+  let d = reply(sent(nextDeal(make(), decision, now)!.deal), 10000);
+  const presented = nextDeal(d, decision, now, {
+    ...jevNo,
+    present: true,
+    probability: 0.91,
+  })!.deal;
+  assert.equal(presented.status, "needs_approval");
+  assert.equal(presented.presentation?.present, true);
+  assert.equal(presented.presentation?.probability, 0.91);
+  const withheld = nextDeal(d, decision, now, jevNo)!;
+  assert.equal(withheld.deal.status, "draft_ready");
+  assert.equal(withheld.deal.rounds, 2);
+  assert.equal(withheld.deal.presentation?.present, false);
+  assert.ok(!withheld.deal.pending!.text.includes("Jev"));
+  assert.ok(!withheld.deal.pending!.text.includes("12,000"));
+});
+test("Jev no on a price beating the target never counters worse than the offer", () => {
+  for (const direction of ["minimize", "maximize"] as const) {
+    let d = make(direction);
+    d.spec.maxRounds = 3;
+    const offer = direction === "minimize" ? 9000 : 160000;
+    const worse = (n: number) =>
+      direction === "minimize" ? n >= offer : n <= offer;
+    d = reply(sent(nextDeal(d, decision, now)!.deal), offer);
+    const round2 = nextDeal(d, decision, now, jevNo)!.deal;
+    assert.ok(!worse(round2.pending!.amount), `${direction} round 2`);
+    assert.ok(!round2.pending!.text.includes("leaves a gap"));
+    const final = nextDeal(
+      reply(sent(round2), offer),
+      decision,
+      now,
+      jevNo,
+    )!.deal;
+    assert.equal(final.rounds, 3);
+    assert.ok(!worse(final.pending!.amount), `${direction} final round`);
+  }
+});
+test("Jev no at the round cap does not present an in-limit price", () => {
+  let d = make();
+  d.spec.maxRounds = 1;
+  d = reply(sent(nextDeal(d, decision, now)!.deal), 11000);
+  d = nextDeal(d, decision, now, jevNo)!.deal;
+  assert.equal(d.status, "walked_away");
+  assert.match(d.stopReason!, /Not presented to the user/);
+  assert.equal(d.presentation?.present, false);
+  assert.throws(() => commandDeal(d, { command: "approve" }, now));
+});
 test("invalid limits, stale reply references and expired approval are rejected", () => {
   assert.throws(() =>
     validateSpec({ direction: "minimize", target: 20, limit: 10 }, now),

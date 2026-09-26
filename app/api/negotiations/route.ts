@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { validateSpec, createDeal, nextDeal, commandDeal } from "@/lib/deal";
 import { readDeal, saveDeal, dealHistory } from "@/lib/deal-store";
 import { planDeal } from "@/lib/deal-planner";
+import { judgePendingPresentation } from "@/lib/present";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 function canonical(v: unknown): unknown {
@@ -32,7 +33,7 @@ function idValid(id: unknown): id is string {
 }
 function failure(e: unknown) {
   const message = e instanceof Error ? e.message : "";
-  const safe = /^(Invalid |Conflict:|Model )/.test(message);
+  const safe = /^(Invalid |Conflict:|Model |Jev )/.test(message);
   return Response.json(
     {
       error: safe
@@ -115,7 +116,12 @@ export async function POST(request: Request) {
       throw new Error("Conflict: provide the latest version");
     const result =
       body.command === "next"
-        ? nextDeal(before, await planDeal(before))
+        ? nextDeal(
+            before,
+            await planDeal(before),
+            new Date(),
+            await judgePendingPresentation(before),
+          )
         : commandDeal(before, body);
     if (!result) return Response.json({ deal: before, changed: false });
     await saveDeal(result.deal, result.event, before.version);
