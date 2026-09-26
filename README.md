@@ -1,6 +1,6 @@
-# Followthrough
+# Tony
 
-A durable purchase agent that carries a car-buying goal through discovery, itemized quotes, negotiation, verification, and human review.
+Tony is the deal agent for personal assistants. An assistant calls Tony's negotiation API with its person's target, private walk-away limit and required terms; Tony carries the negotiation through counters, follow-ups and interruptions, and brings the final decision back for approval. The included car demo shows Tony taking a car-buying goal through discovery, itemized quotes, negotiation, verification, and human review.
 
 Built for the Long Horizon Engineering track. This original prototype uses fictional cars and simulated dealer responses. It does not contact dealers, execute payments, sign contracts, or buy a vehicle.
 
@@ -54,9 +54,9 @@ Reference: https://openrouter.ai/docs/quickstart
 - **Durability:** separate MongoDB mission and event records. A transaction atomically commits the next version and its event. Optimistic version checks reject stale worker commits.
 - **Bounded working memory:** the planner reads the latest brief, three bounded offer records, and aggregate numeric feedback. The event archive is stored separately and only the most recent 30 events are displayed. No unbounded message transcript is sent to the model.
 - **Goal changes:** changing budget or mileage invalidates any earlier selection and approval. A future run evaluates the latest constraints.
-- **Hard feedback:** the synthetic dealer adapter returns numeric quote reductions. The agent challenges optional fees, anchors its counter, uses genuine verified alternatives, and asks for final written prices. Per-tactic reductions and stalled replies accumulate in durable state and inform the model. This is feedback-conditioned strategy selection, not trained model weights.
+- **Hard feedback:** the synthetic dealer adapter returns numeric quote reductions. Tony challenges optional fees, anchors its counter, uses genuine verified alternatives, and asks for final written prices. Per-tactic reductions and stalled replies accumulate in durable state and inform the model. This is feedback-conditioned strategy selection, not trained model weights.
 - **Process independence:** a separate worker progresses active missions while the browser is closed.
-- **Human review:** the agent stops at a purchase packet. Approval records the user's review; it does not perform a transaction.
+- **Human review:** Tony stops at a purchase packet. Approval records the user's review; it does not perform a transaction.
 
 The synthetic adapter has no external side effects. Version checks prevent duplicate committed demo actions. Live external actions would need a durable outbox, provider idempotency support, reconciliation after uncertain results, explicit communication authorization, and real integrations before use.
 

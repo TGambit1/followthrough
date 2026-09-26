@@ -503,7 +503,7 @@ export function advance(
       if (!best) {
         title = "Walk away: no offer fits your limits";
         detail =
-          "No current verified offer fits your private ceiling and mileage limit. The agent will not raise your limits to manufacture a deal.";
+          "No current verified offer fits your private ceiling and mileage limit. Tony will not raise your limits to manufacture a deal.";
       } else if (withheld) {
         title = "Price withheld from review";
         const probability =

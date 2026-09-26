@@ -9,6 +9,7 @@ Content-Type: application/json
   "spec": {
     "subject": "Annual software renewal, same seats and term",
     "counterparty": "Your vendor",
+    "onBehalfOf": "Jordan Lee",
     "direction": "minimize",
     "currency": "USD",
     "initialOffer": 15000,
@@ -24,14 +25,15 @@ export default function ApiGuide() {
   return (
     <main className="api-guide">
       <Link href="/">← Back to the sit-down</Link>
-      <span className="eyebrow">SAPRANO · HOUSE RULES</span>
+      <span className="eyebrow">TONY · HOUSE RULES FOR PERSONAL ASSISTANTS</span>
       <h1>
         Your number.
         <span>Our persistence.</span>
       </h1>
       <p className="subtitle">
-        Hook your app to a negotiator that remembers the counter, follows up,
-        and knows when to walk.
+        Give your personal assistant a negotiator. Tony remembers the counter,
+        follows up, and knows when to walk, so your assistant gets its person
+        the best deal.
       </p>
       <div className="api-cases">
         <span>Cars & equipment</span>
@@ -43,7 +45,7 @@ export default function ApiGuide() {
         <h2>One key. A sit-down that remembers.</h2>
         <p>
           Use the separate <code>NEGOTIATION_API_KEY</code> stored on your
-          server. Your OpenRouter key stays inside the house. The API takes a
+          server. Your OpenRouter key stays inside Tony. The API takes a
           numeric price on one consistent basis, plus the terms that are
           non-negotiable, whether you want the number down or up.
         </p>

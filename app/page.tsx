@@ -120,9 +120,9 @@ export default function Home() {
     <div className="shell">
       <aside className="sidebar">
         <a href="/" className="brand">
-          <span className="brandmark">TS</span> Saprano
+          <span className="brandmark">T</span> Tony
         </a>
-        <div className="side-caption">Tony’s motor sit-down</div>
+        <div className="side-caption">The deal agent for assistants</div>
         <nav>
           <a className="api-nav" href="/api-guide">
             House rules
@@ -159,7 +159,7 @@ export default function Home() {
       <main>
         <header className="topbar">
           <span>
-            Saprano <b>/</b> The lot
+            Tony <b>/</b> The lot
           </span>
           <div className="top-status">
             <span className="tiny-dot" />
@@ -216,8 +216,8 @@ export default function Home() {
                 Keep the whole thing under $32,000.”
               </h2>
               <p>
-                We pull comparable offers, chase the fees, check the title, and
-                bring the packet back for your blessing.
+                Tony pulls comparable offers, chases the fees, checks the title,
+                and brings the packet back for your blessing.
               </p>
               <button
                 className="primary"
@@ -410,7 +410,7 @@ export default function Home() {
                         ))}
                         {!m.offers.length && (
                           <div className="empty">
-                            The sheet fills in once we scout cars that fit the brief.
+                            The sheet fills in once Tony scouts cars that fit the brief.
                           </div>
                         )}
                       </div>
@@ -661,7 +661,7 @@ export default function Home() {
                 </aside>
               </div>
               <footer>
-                <span>SAPRANO · NORTH JERSEY MOTOR SIT-DOWN</span>
+                <span>TONY · NORTH JERSEY MOTOR SIT-DOWN</span>
                 <button
                   disabled={busy}
                   onClick={() => {

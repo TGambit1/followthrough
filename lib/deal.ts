@@ -16,6 +16,7 @@ export type DealSpec = {
   followUpHours: number;
   maxFollowUps: number;
   deadline: string;
+  onBehalfOf?: string;
 };
 export type Draft = {
   id: string;
@@ -142,8 +143,14 @@ export function validateSpec(
     followUpHours: integer(body.followUpHours, 24, 1, 168),
     maxFollowUps: integer(body.maxFollowUps, 2, 0, 3),
     deadline: new Date(deadline).toISOString(),
+    ...(body.onBehalfOf === undefined
+      ? {}
+      : { onBehalfOf: text(body.onBehalfOf, "on behalf of", 100) }),
   };
 }
+// Every outbound draft identifies Tony and whom it represents.
+const intro = (d: Deal) =>
+  `This is Tony, negotiating on behalf of ${d.spec.onBehalfOf ?? "my client"}. `;
 export function createDeal(id: string, spec: DealSpec, now = new Date()): Deal {
   return {
     id,
@@ -283,7 +290,7 @@ export function nextDeal(
         deliveryId: undefined,
         nextFollowUpAt: undefined,
         followUps: p.followUps + 1,
-        text: `Following up on my ${fmt(d, p.amount)} counter for ${d.spec.subject}. The counter has not changed. Please provide a concrete written response with all mandatory charges and terms. Without a substantive response, I will stop pursuing this proposal. No agreement is authorized by this message.`,
+        text: `${intro(d)}Following up on my ${fmt(d, p.amount)} counter for ${d.spec.subject}. The counter has not changed. Please provide a concrete written response with all mandatory charges and terms. Without a substantive response, I will stop pursuing this proposal. No agreement is authorized by this message.`,
       };
       d.status = "draft_ready";
       kind = "follow_up";
@@ -328,7 +335,7 @@ export function nextDeal(
           : meets(d, d.latestOffer, d.spec.target)
             ? "Your current proposal is not yet one I can recommend. "
             : "Your current proposal still leaves a gap. ";
-    detail = `Regarding ${d.spec.subject}: your current proposal is ${fmt(d, d.latestOffer)}. ${opening}My counter is ${fmt(d, counter)} on the same stated pricing basis. ${clauses}Please send a revised written proposal with all charges and conditions. I am prepared to walk away. This is a negotiation proposal, subject to the buyer or principal’s final review; it is not acceptance or authority to transact.`;
+    detail = `${intro(d)}Regarding ${d.spec.subject}: your current proposal is ${fmt(d, d.latestOffer)}. ${opening}My counter is ${fmt(d, counter)} on the same stated pricing basis. ${clauses}Please send a revised written proposal with all charges and conditions. I am prepared to walk away. This is a negotiation proposal, subject to the buyer or principal’s final review; it is not acceptance or authority to transact.`;
     d.pending = {
       id: `${d.id}:${d.version + 1}`,
       kind: "counter",

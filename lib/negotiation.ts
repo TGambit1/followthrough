@@ -57,6 +57,7 @@ export const tacticLabels: Record<Tactic, string> = {
 const money = (n: number) => "$" + n.toLocaleString("en-US");
 // Outbound text deliberately has no buyer ceiling or model-generated claims. The model
 // chooses a validated tactic; these templates ground every factual claim in saved evidence.
+const intro = "This is Tony, negotiating on behalf of a buyer. ";
 export function buyerMessage(car: string, total: number, p: Pending): string {
   const reference = p.reference
     ? `I have a written alternative: ${p.reference.car} at ${money(p.reference.total)} all-in. It is a different vehicle, so this is an alternative purchase, not an identical-car price match. `
@@ -70,8 +71,8 @@ export function buyerMessage(car: string, total: number, p: Pending): string {
     final_counter:
       "Please have the person authorized to approve pricing review this counter and provide your best written total. ",
   };
-  return `Your written total for the ${car} is ${money(total)}. ${approach[p.tactic]}My counter is ${money(p.counterTotal)} out the door, including all fees, with no required extras. If that does not work, give me a concrete revised total. I am prepared to pass. Any purchase remains subject to the buyer’s review and approval.`;
+  return `${intro}Your written total for the ${car} is ${money(total)}. ${approach[p.tactic]}My counter is ${money(p.counterTotal)} out the door, including all fees, with no required extras. If that does not work, give me a concrete revised total. I am prepared to pass. Any purchase remains subject to the buyer’s review and approval.`;
 }
 export function followUpMessage(p: Pending): string {
-  return `Following up on my ${money(p.counterTotal)} out-the-door counter. I have not raised it. Please respond with an itemized written total and confirm whether optional extras are required. Without a substantive reply, I will stop pursuing this offer.`;
+  return `${intro}Following up on my ${money(p.counterTotal)} out-the-door counter. I have not raised it. Please respond with an itemized written total and confirm whether optional extras are required. Without a substantive reply, I will stop pursuing this offer.`;
 }

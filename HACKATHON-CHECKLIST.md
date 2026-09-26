@@ -12,7 +12,7 @@ Source: supplied “[EXTERNAL] THE HARNESS ENGINEERING & MODEL WRANGLING HACKATH
 | All work original; no prior projects | Project created in this session | Standalone `/Users/trickett/followthrough`; publish only this project. No Bantr application code was copied into it. Third-party libraries are used. Organizers have final say on originality. |
 | Up to four team members | User reports solo | Within the stated team-size limit. |
 | Public repository | Complete | https://github.com/TGambit1/followthrough verified PUBLIC. Saved credentials were scanned out; `.env.local`, local data, dependencies and build output are excluded. |
-| Accessible demo link | Prepared, not deployed | Vercel project `bobby-2019s-projects/followthrough` created. Uploading the app credentials awaits explicit user authorization required by automatic approval review. Deploy and verify from a fresh browser afterward. |
+| Accessible demo link | Complete | https://followthrough-umber.vercel.app deployed on Vercel. Verified publicly without login: Atlas storage, model planner, mission create plus three steps, `/api-guide`, and 401 on unauthenticated `/api/negotiations` and `/api/tick`. |
 | On-site recording September 26 | Outstanding | Record a one-minute video showing code and functionality built today. |
 | Submit through Cerebral Valley | Outstanding | Submit public GitHub link, one-minute video, concise description; confirm your member entry and playback. |
 | Finalist attendance September 30, 10 AM–4:30 PM | Unconfirmed | User must confirm attendance at MongoDB.local NYC if selected. |

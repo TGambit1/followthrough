@@ -10,7 +10,7 @@ process.on("SIGTERM", () => {
   stopping = true;
 });
 console.log(
-  "Followthrough worker: synthetic dealer adapter, persistent counters and accelerated reply deadlines. Ctrl+C stops the process; checkpoints survive.",
+  "Tony worker: synthetic dealer adapter, persistent counters and accelerated reply deadlines. Ctrl+C stops the process; checkpoints survive.",
 );
 async function main() {
   while (!stopping) {

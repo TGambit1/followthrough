@@ -1,18 +1,18 @@
-# Followthrough submission packet
+# Tony submission packet
 
-Project: **Followthrough — persistent negotiation as an API**
+Project: **Tony — the deal agent for personal assistants**
 
 Track: **Long Horizon Engineering**
 
 Repository: https://github.com/TGambit1/followthrough
 
-Hosted demo: **pending deployment and public verification**
+Hosted demo: https://followthrough-umber.vercel.app
 
 Video: **record on-site September 26 and add the link**
 
 ## Concise description
 
-Followthrough is a persistent negotiation API. Give it a target, a private walk-away limit, required terms, and a deadline. It prepares firm counters, schedules follow-ups, learns from measured concessions, and preserves the negotiation through interruptions. MongoDB Atlas stores versioned state and a separate event history; GPT-5.6 Luna chooses tactics using bounded working context and numeric feedback. The included car demo uses synthetic dealers and accelerated time to expose stalled replies, repeated counters, and recovery. Integrations deliver drafts and return actual responses. Final approval stays with the user.
+Tony is a persistent negotiation API that personal assistants call to get their people the best deals. The assistant gives Tony a target, a private walk-away limit, required terms, and a deadline. Tony prepares firm counters, schedules follow-ups, learns from measured concessions, and preserves the negotiation through interruptions. MongoDB Atlas stores versioned state and a separate event history; GPT-5.6 Luna chooses tactics using bounded working context and numeric feedback. The included car demo uses synthetic dealers and accelerated time to expose stalled replies, repeated counters, and recovery. The assistant delivers drafts through its own channels and reports actual responses. Final approval stays with the person.
 
 ## Evidence available
 
@@ -25,7 +25,7 @@ Followthrough is a persistent negotiation API. Give it a target, a private walk-
 ## Before pressing submit
 
 1. Confirm the Atlas project belongs to the emailed Hackathon Sandbox.
-2. Add a publicly accessible hosted demo URL.
+2. ~~Add a publicly accessible hosted demo URL.~~ Done: deployed and verified September 26.
 3. Record and upload a one-minute on-site video showing code and functionality built today. Verify audio and video playback.
 4. Add the solo team member on Cerebral Valley and submit the repository, video, description, and demo where requested.
 5. Confirm the exact submission deadline with organizers.

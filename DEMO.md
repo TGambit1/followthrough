@@ -4,7 +4,7 @@ Record on-site September 26. Keep the synthetic-dealer / accelerated-time label 
 
 | Time | Show | Say |
 |---|---|---|
-| 0–8s | Purchase brief: target, private ceiling, round limit | “Followthrough negotiates toward your target and remembers the line you will not cross.” |
+| 0–8s | Purchase brief: target, private ceiling, round limit | “Tony negotiates toward your target and remembers the line you will not cross.” |
 | 8–20s | Dealer quote, first counter, response | “It challenges add-ons, demands a written all-in total, and keeps countering after the first discount.” |
 | 20–31s | Northstar silence and follow-up event | “Silence does not erase the negotiation. It saves a follow-up deadline and holds the same counter.” |
 | 31–43s | Stop/restart the separate worker; show preserved pending round | “Kill the process. MongoDB preserves the counter, evidence, and next action. It resumes the same negotiation.” |

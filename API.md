@@ -1,6 +1,8 @@
-# Persistent negotiation API
+# Tony negotiation API
 
-Endpoint: `/api/negotiations`. All requests require `Authorization: Bearer <NEGOTIATION_API_KEY>`. Generate a server key with `npm run api:key`; it is saved in `.env.local` and never printed. This key authenticates your integration to Followthrough. `MODEL_API_KEY` authenticates Followthrough to OpenRouter; do not give it to API clients.
+Tony is the negotiation API personal assistants call to get their people the best deals. The assistant supplies the goal, delivers Tony's drafts through its own authorized channels, and reports the replies; Tony keeps the negotiation state, chooses tactics, and enforces the limits.
+
+Endpoint: `/api/negotiations`. All requests require `Authorization: Bearer <NEGOTIATION_API_KEY>`. Generate a server key with `npm run api:key`; it is saved in `.env.local` and never printed. This key authenticates your integration to Tony. `MODEL_API_KEY` authenticates Tony to OpenRouter; do not give it to API clients.
 
 This is a single-workspace API. Any holder of the server key can access negotiations in that workspace; per-customer keys, roles, rotation UI and rate limiting are not implemented.
 
@@ -14,6 +16,7 @@ POST with header `Idempotency-Key: a-unique-request-id` (8–128 characters):
   "spec": {
     "subject": "Annual software renewal, same 10 seats and term",
     "counterparty": "Example vendor",
+    "onBehalfOf": "Jordan Lee",
     "direction": "minimize",
     "currency": "USD",
     "initialOffer": 15000,
@@ -26,6 +29,8 @@ POST with header `Idempotency-Key: a-unique-request-id` (8–128 characters):
   }
 }
 ```
+
+Optional `onBehalfOf` (up to 100 characters) names the person the assistant represents. Every draft opens with "This is Tony, negotiating on behalf of Jordan Lee."; without it, drafts say "on behalf of my client".
 
 `limit` is the private ceiling for `minimize`, or private floor for `maximize` (for example compensation). `target` must be inside that limit. Keep all amounts on the same currency and pricing basis; no automatic currency, monthly/annual, tax, benefits or insurance-coverage conversion occurs. Optional `deadline` is an ISO timestamp within the next 30 days; default is seven days.
 
@@ -51,7 +56,7 @@ Example next step:
 {"command":"next","id":"RETURNED_ID","version":0}
 ```
 
-A draft includes stable `id`, `text`, `amount`, `round`, and `tactic`. Deliver it through your authorized email/chat/other adapter, deduplicating by draft ID. Only then call `mark_sent`. The caller must reconcile uncertain delivery outcomes before retrying: Followthrough does not independently guarantee exactly-once delivery to external systems.
+A draft includes stable `id`, `text`, `amount`, `round`, and `tactic`. Deliver it through your authorized email/chat/other adapter, deduplicating by draft ID. Only then call `mark_sent`. The caller must reconcile uncertain delivery outcomes before retrying: Tony does not independently guarantee exactly-once delivery to external systems.
 
 `acceptedTerms` contains exact strings from `requiredTerms`. This is an assertion from your integration, not independent legal/semantic verification. Preserve the underlying written offer and use `sourceId` to identify it. Counterparty replies are treated as untrusted data in model prompts.
 
