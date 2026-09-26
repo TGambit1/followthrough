@@ -1,0 +1,31 @@
+{
+  "name": "followthrough",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack -p 3100",
+    "build": "next build --webpack",
+    "start": "next start -p 3100",
+    "test": "tsx --test scripts/*.test.ts",
+    "worker": "tsx --env-file-if-exists=.env.local scripts/worker.ts",
+    "evaluate": "tsx scripts/evaluate.ts",
+    "api:key": "node --import tsx scripts/api-key.ts",
+    "test:api": "node --env-file=.env.local --import tsx scripts/api-smoke.ts"
+  },
+  "dependencies": {
+    "next": "16.2.11",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "mongodb": "^6.20.0"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsx": "^4.22.0"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
