@@ -1,43 +1,34 @@
-# One-minute demo
+# One-minute demo: persistence earns the next concession
 
-Before recording, use Atlas and the model planner. Start a new mission and advance through quote collection. Keep a terminal showing `npm run worker`. Do not represent the deterministic preview as model autonomy.
+Record on-site September 26. Keep the synthetic-dealer / accelerated-time label visible. Use a new mission with the target set to $28,000. Prepare intermediate checkpoints so recording is not consumed by waiting for model responses; disclose cuts. Never show `.env.local` or API credentials in the video.
 
-0–8 seconds: “Buying a car takes weeks of follow-ups. Followthrough holds the goal, evidence, and next action across that entire journey.” Show the brief and synthetic-demo label.
+| Time | Show | Say |
+|---|---|---|
+| 0–8s | Purchase brief: target, private ceiling, round limit | “Followthrough negotiates toward your target and remembers the line you will not cross.” |
+| 8–20s | Dealer quote, first counter, response | “It challenges add-ons, demands a written all-in total, and keeps countering after the first discount.” |
+| 20–31s | Northstar silence and follow-up event | “Silence does not erase the negotiation. It saves a follow-up deadline and holds the same counter.” |
+| 31–43s | Stop/restart the separate worker; show preserved pending round | “Kill the process. MongoDB preserves the counter, evidence, and next action. It resumes the same negotiation.” |
+| 43–52s | `lib/deal.ts` and `/api-guide` | “Any integration can submit a price-and-terms goal, deliver the draft, and return a response. Version checks protect the history.” |
+| 52–60s | Final quote and approval button | “The demo reached $27,900 after repeated counters. This is a simulated outcome. You approve the final decision.” |
 
-8–20 seconds: Advance discovery and quotes. “It compares written all-in prices. A large fee gap changes how it negotiates, and the resulting price changes become feedback.” Show the stored policy and quote reduction. State that dealer replies and time are simulated.
+## Recording preparation
 
-20–35 seconds: Lower the budget to $29,500. Stop the worker with Ctrl+C, then restart it. “The process can die. The new budget and completed work survive in MongoDB. It picks up from the saved version.” Show the resumed version number; do not use UI pause alone as evidence of a process restart.
+1. Open the app and `lib/deal.ts` / `lib/store.ts` in separate windows.
+2. Start a fresh car mission and advance to a pending counter. Keep enough unfinished work to demonstrate recovery.
+3. Use `npm run worker` in a terminal. Stop it with Ctrl+C and restart it for an actual process recovery demonstration. The UI Pause button alone is not proof of process restart.
+4. Show the saved round and upcoming reply/follow-up, then the final decision. Keep the recording concise; use a backup recording of the working flow if live latency is high.
+5. Check playback and audible narration before submission.
 
-35–47 seconds: Show rejected branded-title offer and qualifying Civic. “The cheapest listing fails the title constraint. It retains the buyer's requirements and finds the best verified eligible offer.”
+## Judge questions
 
-47–55 seconds: Briefly show `lib/store.ts` transaction and `lib/planner.ts` bounded context. “The archive stays durable; the planner carries just the current brief, evidence, and feedback.”
+**Why MongoDB?** Current state and its event are committed together. A separate archive preserves history while each model decision reads a bounded working state.
 
-55–60 seconds: Show purchase approval. “It brings me a decision with evidence. I stay in control of the commitment.”
+**What learns?** Numeric quote improvements accumulate by tactic and enter the next model decision. This is feedback-conditioned tactic selection, not trained weights or proof of optimal bargaining.
 
-Timing depends on model latency. Prepare intermediate checkpoints before recording and disclose any cuts. Keep a backup recording of the actual working flow.
+**What is autonomous?** The worker prepares counters and due follow-ups. The car adapter simulates delivery and replies. API clients must provide authorized real transports and response evidence. No purchase is executed.
 
-# Submission description
+**What is long horizon?** Durable continuation across processes, waiting periods, and changed goals. Billion-token scale and weeks of live execution remain untested.
 
-Followthrough is a long-horizon car-purchase agent that preserves a buyer's changing goals through discovery, itemized quotes, negotiation, verification, and human review. MongoDB stores versioned checkpoints and execution evidence so the worker can recover after interruption without forgetting new constraints or repeating committed demo actions. A bounded working context keeps the current brief, offer evidence, and numeric negotiation feedback separate from the event archive. The prototype demonstrates the workflow with synthetic listings, simulated dealer replies, and accelerated time; a configurable model selects eligible actions. It prepares an approval packet and does not execute a real purchase.
+**What can the API negotiate?** A price on a consistent currency/time basis, plus explicit required terms, in either a buying or selling direction. Specialized contractual interpretation and domain integrations are outside this prototype.
 
-# Evidence to collect
-
-Record actual evaluation output, model and provider, token count, elapsed runtime, storage mode, and a worker restart. Do not present aggregate reductions across all three quotes as savings on the selected car. Do not describe a stale-memory ablation as a competitive model benchmark.
-
-# Questions judges may ask
-
-**Why MongoDB?** The current mission and its event are committed together, giving the agent a recoverable checkpoint and an auditable history. Bounded current evidence is read independently of the archive.
-
-**What learns?** Quote reductions and stalled replies become per-tactic numeric feedback for the model. Multiple rounds and timed follow-ups continue until a target or stopping condition is reached. This is strategy selection using feedback, not weight training.
-
-**What is autonomous?** With the model configured, it selects from valid next actions; a separate worker executes and persists steps without the browser. Dealer behavior is simulated. Final commitment requires human review.
-
-**What is long horizon here?** Durable continuation across processes and changed constraints, plus bounded context independent of stored history. Actual billion-token processing and weeks of execution have not been tested.
-
-**How would it buy a home or insurance?** Reuse goal persistence, evidence provenance, deadlines, and approval gates; replace domain tools and constraint evaluators. The API accepts a price target, private limit, and required terms across domains; domain-specific validation and real communication adapters are not implemented.
-
-## Updated core message
-
-“Followthrough is a persistent negotiation API. Give it the target and the line you will not cross. It counters, follows up, remembers every concession, and brings the final decision back to you.”
-
-Show `/api-guide` briefly, then use the car workflow to demonstrate repeated counters and the Northstar silence/follow-up event. Keep synthetic dealer responses and accelerated time visible. Show selected-offer savings separately from reductions summed across competing offers.
+See SUBMISSION.md for the final description and links.
