@@ -85,8 +85,8 @@ This prototype has three fixed fictional listings and bounded 100-step car missi
 - [ ] Build and run with the emailed Atlas Hackathon Sandbox.
 - [ ] Enable and exercise the model planner.
 - [ ] Run the separate worker and demonstrate actual restart recovery.
-- [ ] Deploy and check the demo from a fresh browser.
-- [ ] Publish an original public repository with no `.env.local`, `.data/`, secrets, or unrelated Bantr code.
+- [x] Deploy and check the demo from a fresh browser: https://followthrough-umber.vercel.app
+- [x] Publish an original public repository with no `.env.local`, `.data/`, secrets, or unrelated Bantr code.
 - [ ] Record a 1-minute on-site video showing code and functionality built today; check audio/video playback.
 - [ ] Submit repository, video, and concise description through Cerebral Valley.
 - [ ] Confirm the exact submission deadline with organizers.
