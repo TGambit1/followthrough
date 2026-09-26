@@ -25,7 +25,7 @@ Demonstrated or directly testable mechanisms:
 - Interrupted processes recover current constraints and pending negotiation state.
 - Counters, delivery receipts, supplied reply sources, numeric concessions, and per-tactic outcomes are durable.
 - Follow-ups keep the prior counter unchanged and obey persisted deadlines and caps.
-- The model receives numeric tactic outcomes; code enforces private limits, required terms, and approval gates.
+- The model receives numeric tactic outcomes; code enforces private limits, required terms, and approval gates. Jev judges whether an in-limit price is acceptable to present. It cannot override those gates or approve a purchase.
 - The car demo has synthetic counterparties and accelerated days; generic API follow-up timestamps use real time and requires caller-delivered messages/replies.
 
 Current validation: 19 tests passed; production build passed; authenticated live API flow passed using synthetic replies. Nine deterministic car cases had zero constraint violations; comparable cases showed $1,300 more reduction than a one-round baseline. Before submission, record these results and an actual process restart. Describe the API as price-and-terms negotiation across domains, not a guarantee that it can negotiate literally anything.

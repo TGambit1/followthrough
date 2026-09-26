@@ -43,6 +43,8 @@ Reference: https://www.mongodb.com/docs/atlas/connect-to-database-deployment/
 5. Keep `MODEL_BASE_URL=https://openrouter.ai/api/v1` or use a compatible provider endpoint.
 6. Restart the app and worker. Confirm the dashboard says **Model planner**.
 
+To let Jev decide whether a price is acceptable to present, create a key at https://thejevai.com/settings/apikeys and set `JEV_API_KEY`. The dashboard then says **Jev price check**. Jev returns a yes-probability; the app presents the price only at 0.50 or above. Private limits, required terms, and final approval stay in code. Without the key, an in-limit price is presented by rule and the dashboard says **Rule price check**.
+
 The planner chooses among currently eligible tools and explains the next action. The harness validates its output before executing the simulated tool and committing the result. Model errors are visible and do not silently fall back to deterministic mode. Credentials are read server-side only.
 
 Reference: https://openrouter.ai/docs/quickstart
@@ -52,9 +54,9 @@ Reference: https://openrouter.ai/docs/quickstart
 - **Durability:** separate MongoDB mission and event records. A transaction atomically commits the next version and its event. Optimistic version checks reject stale worker commits.
 - **Bounded working memory:** the planner reads the latest brief, three bounded offer records, and aggregate numeric feedback. The event archive is stored separately and only the most recent 30 events are displayed. No unbounded message transcript is sent to the model.
 - **Goal changes:** changing budget or mileage invalidates any earlier selection and approval. A future run evaluates the latest constraints.
-- **Hard feedback:** the synthetic dealer adapter returns numeric quote reductions. The agent challenges optional fees, anchors its counter, uses genuine verified alternatives, and asks for final written prices. Per-tactic reductions and stalled replies accumulate in durable state and inform the model. This is feedback-conditioned strategy selection, not trained model weights.
+- **Hard feedback:** the synthetic dealer adapter returns numeric quote reductions. Tony challenges optional fees, anchors its counter, uses genuine verified alternatives, and asks for final written prices. Per-tactic reductions and stalled replies accumulate in durable state and inform the model. This is feedback-conditioned strategy selection, not trained model weights.
 - **Process independence:** a separate worker progresses active missions while the browser is closed.
-- **Human review:** the agent stops at a purchase packet. Approval records the user's review; it does not perform a transaction.
+- **Human review:** Tony stops at a purchase packet. Approval records the user's review; it does not perform a transaction.
 
 The synthetic adapter has no external side effects. Version checks prevent duplicate committed demo actions. Live external actions would need a durable outbox, provider idempotency support, reconciliation after uncertain results, explicit communication authorization, and real integrations before use.
 

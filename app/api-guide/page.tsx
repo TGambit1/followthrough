@@ -24,17 +24,16 @@ Content-Type: application/json
 export default function ApiGuide() {
   return (
     <main className="api-guide">
-      <Link href="/">← Back to the car negotiation demo</Link>
-      <span className="eyebrow">TONY · NEGOTIATION API FOR PERSONAL ASSISTANTS</span>
+      <Link href="/">← Back to the sit-down</Link>
+      <span className="eyebrow">TONY · HOUSE RULES FOR PERSONAL ASSISTANTS</span>
       <h1>
-        Your goal.
-        <br />
+        Your number.
         <span>Our persistence.</span>
       </h1>
       <p className="subtitle">
         Give your personal assistant a negotiator. Tony remembers the counter,
-        follows up, and knows when to walk away, so your assistant gets its
-        person the best deal.
+        follows up, and knows when to walk, so your assistant gets its person
+        the best deal.
       </p>
       <div className="api-cases">
         <span>Cars & equipment</span>
@@ -43,17 +42,17 @@ export default function ApiGuide() {
         <span>Service quotes</span>
       </div>
       <section>
-        <h2>One key. A durable negotiation.</h2>
+        <h2>One key. A sit-down that remembers.</h2>
         <p>
           Use the separate <code>NEGOTIATION_API_KEY</code> stored on your
-          server. Your OpenRouter key stays inside Tony. The API
-          supports a numeric price on a consistent basis plus required terms,
-          with either lower or higher as the goal.
+          server. Your OpenRouter key stays inside Tony. The API takes a
+          numeric price on one consistent basis, plus the terms that are
+          non-negotiable, whether you want the number down or up.
         </p>
         <pre>{example}</pre>
       </section>
       <section>
-        <h2>The integration loop</h2>
+        <h2>How a round goes</h2>
         <ol>
           <li>
             <strong>Create</strong> a negotiation with a target and private
@@ -74,7 +73,8 @@ export default function ApiGuide() {
           </li>
           <li>
             Call <strong>next</strong> again. It creates the next counter, a due
-            follow-up, or a decision for your approval.
+            follow-up, or asks Jev whether the price is acceptable to present
+            for your approval.
           </li>
         </ol>
         <p>
@@ -84,12 +84,13 @@ export default function ApiGuide() {
         </p>
       </section>
       <section>
-        <h2>Firm. Grounded. Under your control.</h2>
+        <h2>Firm. On the record. Your call.</h2>
         <p>
           We ask for itemized charges, counter below the buying target or above
           the selling target, and hold the counter during silence. Price changes
           feed per-tactic outcome metrics. Limits, deadlines, and missing
-          required terms block automatic acceptance.
+          required terms block automatic acceptance. Jev only decides whether
+          an in-limit price is worth showing you; you still approve it.
         </p>
         <p>
           The API returns drafts for your integration to deliver. No email,
