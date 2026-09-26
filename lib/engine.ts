@@ -10,6 +10,7 @@ import {
   type TacticResult,
 } from "./negotiation";
 import { simulatedQuote, simulatedReply } from "./dealer-simulator";
+import type { PriceJudgment, PresentationRecord } from "./jev";
 export type Offer = {
   id: string;
   dealer: string;
@@ -50,6 +51,7 @@ export type Mission = {
     tactics?: Partial<Record<Tactic, TacticResult>>;
   };
   lastDecision: string;
+  presentation?: PresentationRecord;
 };
 export type Event = {
   id: string;
@@ -159,6 +161,11 @@ export function createMission(
     lastDecision:
       "Pursue the target price with firm, evidence-backed counters. Keep the buyer’s ceiling private and require written all-in totals.",
   };
+}
+export function bestEligibleOffer(m: Mission) {
+  return m.offers
+    .filter((o) => eligible(o, m))
+    .sort((a, b) => a.total! - b.total!)[0];
 }
 export function eligible(o: Offer, m: Mission) {
   return (
@@ -295,6 +302,7 @@ export function advance(
   input: Mission,
   action: Action,
   rationale: string,
+  judgment?: PriceJudgment,
 ): { mission: Mission; event: Event } {
   const m = normalizeMission(input);
   if (
@@ -479,19 +487,43 @@ export function advance(
         offer.negotiation!.pending = undefined;
         offer.negotiated = true;
       }
-      const best = m.offers
-        .filter((o) => eligible(o, m))
-        .sort((a, b) => a.total! - b.total!)[0];
-      m.selected = best?.id;
-      m.status = best ? "approval" : "blocked";
-      title = best
-        ? best.total! <= p.targetTotal
-          ? "Target beaten. Your decision."
-          : "Best available offer: target not reached"
-        : "Walk away: no offer fits your limits";
-      detail = best
-        ? `${best.car}: $${best.total!.toLocaleString()} all-in. ${best.total! <= p.targetTotal ? "Negotiation target reached." : `Still $${(best.total! - p.targetTotal).toLocaleString()} above target; no automatic acceptance.`} You decide whether to proceed. No real dealer has been contacted.`
-        : "No current verified offer fits your private ceiling and mileage limit. The agent will not raise your limits to manufacture a deal.";
+      const best = bestEligibleOffer(m);
+      const withheld = !!best && judgment?.present === false;
+      const show = !!best && !withheld;
+      if (judgment && best) {
+        m.presentation = {
+          source: judgment.source,
+          present: judgment.present,
+          probability: judgment.probability,
+          model: judgment.model,
+          threshold: judgment.threshold,
+          amount: best.total!,
+          subject: best.car,
+        };
+        m.tokens += judgment.inputTokens;
+      }
+      m.selected = show ? best.id : undefined;
+      m.status = show ? "approval" : "blocked";
+      if (!best) {
+        title = "Walk away: no offer fits your limits";
+        detail =
+          "No current verified offer fits your private ceiling and mileage limit. The agent will not raise your limits to manufacture a deal.";
+      } else if (withheld) {
+        title = "Price withheld from review";
+        const probability =
+          judgment?.source === "jev" && judgment.probability !== null
+            ? ` Jev yes-probability ${judgment.probability.toFixed(2)} is below ${judgment.threshold.toFixed(2)}.`
+            : "";
+        detail = `${best.car} at $${best.total!.toLocaleString()} all-in was not presented for approval.${probability} No purchase was requested.`;
+      } else {
+        title =
+          best.total! <= p.targetTotal
+            ? "Target beaten. Your decision."
+            : "Best available offer: target not reached";
+        detail = `${best.car}: $${best.total!.toLocaleString()} all-in. ${best.total! <= p.targetTotal ? "Negotiation target reached." : `Still $${(best.total! - p.targetTotal).toLocaleString()} above target; no automatic acceptance.`} You decide whether to proceed. No real dealer has been contacted.`;
+        if (judgment?.source === "jev" && judgment.probability !== null)
+          detail += ` Jev yes-probability ${judgment.probability.toFixed(2)} met ${judgment.threshold.toFixed(2)}, so this price was presented for your decision.`;
+      }
       break;
     }
   }
@@ -556,6 +588,7 @@ export function edit(
     m.policy!.targetTotal = Math.round(target);
     m.policy!.maxRounds = rounds;
     m.selected = undefined;
+    m.presentation = undefined;
     m.status = "active";
     for (const o of m.offers) {
       const n = o.negotiation!;

@@ -1,6 +1,7 @@
 import { db } from "./store";
 import { nextDeal, type Deal } from "./deal";
 import { planDeal } from "./deal-planner";
+import { judgePendingPresentation } from "./present";
 import { saveDeal } from "./deal-store";
 export async function prepareNegotiationDrafts(limit = 10) {
   if (!process.env.NEGOTIATION_API_KEY || !process.env.MONGODB_URI)
@@ -33,7 +34,8 @@ export async function prepareNegotiationDrafts(limit = 10) {
     failed = 0;
   for (const d of deals) {
     try {
-      const result = nextDeal(d, await planDeal(d), now);
+      const judgment = await judgePendingPresentation(d, now);
+      const result = nextDeal(d, await planDeal(d), now, judgment);
       if (result) {
         await saveDeal(result.deal, result.event, d.version);
         prepared++;

@@ -37,7 +37,7 @@ Every subsequent POST includes the current `id`, `version`, and `command`. A sta
 
 | Command | Additional fields | Effect |
 |---|---|---|
-| `next` | None | Produces one draft, follows up if due, or stops for review. Already-pending unsent drafts are returned unchanged. |
+| `next` | None | Produces one draft, follows up if due, or stops. When a quote is inside the private limit and required terms are met, Jev decides whether that price is acceptable to present. Already-pending unsent drafts are returned unchanged. |
 | `mark_sent` | `draftId`, `deliveryId` | Caller reports actual authorized delivery. Starts the real follow-up timer. |
 | `reply` | `draftId`, `amount`, `acceptedTerms`, `sourceId`, `message` | Records the caller-supplied response and measured price movement. |
 | `pause` / `resume` | None | Preserve and resume pending work. |
@@ -54,6 +54,8 @@ Example next step:
 A draft includes stable `id`, `text`, `amount`, `round`, and `tactic`. Deliver it through your authorized email/chat/other adapter, deduplicating by draft ID. Only then call `mark_sent`. The caller must reconcile uncertain delivery outcomes before retrying: Followthrough does not independently guarantee exactly-once delivery to external systems.
 
 `acceptedTerms` contains exact strings from `requiredTerms`. This is an assertion from your integration, not independent legal/semantic verification. Preserve the underlying written offer and use `sourceId` to identify it. Counterparty replies are treated as untrusted data in model prompts.
+
+Before `needs_approval`, the server asks Jev (a yes/no decision, not a text model) whether the price is acceptable to present to the user. The application presents it only when Jev’s yes-probability is at least 0.50. A no while rounds remain prepares another counterparty draft instead of an approval packet. A no after the round, stall, or follow-up cap walks away without requesting approval. Jev cannot override the private limit or required terms, and it does not approve a purchase. `deal.presentation` records `source`, `present`, `probability`, `threshold`, and `amount`. Without `JEV_API_KEY`, the same code rules present an eligible price and `source` is `rules`. A pending draft is still for the counterparty, not an approval request. Set `JEV_MODEL=jev-latest` unless you pin another Jev model.
 
 ## Persistence and learning
 

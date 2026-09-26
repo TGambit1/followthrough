@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { createMission, edit, actions, eligible } from "@/lib/engine";
 import { readMission, save, history, storageMode } from "@/lib/store";
 import { plannerMode } from "@/lib/planner";
+import { jevMode } from "@/lib/jev";
 import { runStep } from "@/lib/run";
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -13,6 +14,7 @@ async function payload(id?: string) {
     events: mission ? await history(mission.id, mission.version) : [],
     storage: storageMode(),
     planner: plannerMode(),
+    jev: jevMode(),
     actions: mission ? actions(mission) : [],
     qualified: mission
       ? mission.offers.filter((o) => eligible(o, mission)).length
@@ -100,7 +102,7 @@ export async function POST(request: Request) {
   } catch (e) {
     const message = e instanceof Error ? e.message : "Action failed";
     const allowed =
-      /^(Use a budget|Use a negotiation|Only |The selected|Unknown command|That action|This mission|Mission reached|Demo model budget|Checkpoint |Model |Recovered a stale)/.test(
+      /^(Use a budget|Use a negotiation|Only |The selected|Unknown command|That action|This mission|Mission reached|Demo model budget|Checkpoint |Model |Jev |Recovered a stale)/.test(
         message,
       );
     return Response.json(

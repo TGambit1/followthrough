@@ -7,6 +7,7 @@ const secretNames = [
   "MODEL_API_KEY",
   "NEGOTIATION_API_KEY",
   "CRON_SECRET",
+  "JEV_API_KEY",
 ];
 const secrets = secretNames
   .map((k) => env[k])

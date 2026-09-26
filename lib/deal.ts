@@ -1,3 +1,4 @@
+import type { PresentationRecord, PriceJudgment } from "./jev";
 export type DealSpec = {
   subject: string;
   counterparty: string;
@@ -52,6 +53,7 @@ export type Deal = {
   createdAt: string;
   updatedAt: string;
   stopReason?: string;
+  presentation?: PresentationRecord;
   outcomes: Partial<
     Record<Draft["tactic"], { responses: number; improvement: number }>
   >;
@@ -66,6 +68,7 @@ export type DealEvent = {
   draft?: Draft;
   amount?: number;
   sourceId?: string;
+  presentation?: PresentationRecord;
 };
 export type DealDecision = {
   tactic: Draft["tactic"];
@@ -159,19 +162,85 @@ function meets(d: Deal, n: number, threshold: number) {
 export function termsMet(d: Deal) {
   return d.spec.requiredTerms.every((t) => d.latestTerms.includes(t));
 }
+function quoteEligible(d: Deal) {
+  return (
+    !!d.latestSource && meets(d, d.latestOffer, d.spec.limit) && termsMet(d)
+  );
+}
+export function negotiationCanContinue(d: Deal, now = new Date()) {
+  return (
+    d.status === "active" &&
+    d.rounds < d.spec.maxRounds &&
+    d.stalls < 2 &&
+    +now < Date.parse(d.spec.deadline)
+  );
+}
+export function presentationCandidate(d: Deal, now = new Date()) {
+  if (!["active", "awaiting_reply"].includes(d.status)) return false;
+  if (+now >= Date.parse(d.spec.deadline)) return false;
+  if (!quoteEligible(d)) return false;
+  if (d.status === "awaiting_reply") {
+    const pending = d.pending;
+    return !!(
+      pending?.sentAt &&
+      pending.nextFollowUpAt &&
+      +now >= Date.parse(pending.nextFollowUpAt) &&
+      pending.followUps >= d.spec.maxFollowUps
+    );
+  }
+  return (
+    meets(d, d.latestOffer, d.spec.target) ||
+    d.rounds >= d.spec.maxRounds ||
+    d.stalls >= 2
+  );
+}
 export function improvement(d: Deal) {
   return (
     (d.spec.initialOffer - d.latestOffer) *
     (d.spec.direction === "minimize" ? 1 : -1)
   );
 }
-function finish(d: Deal, reason: string) {
+function remember(d: Deal, judgment: PriceJudgment | undefined) {
+  if (!judgment) return;
+  d.presentation = {
+    source: judgment.source,
+    present: judgment.present,
+    probability: judgment.probability,
+    model: judgment.model,
+    threshold: judgment.threshold,
+    amount: d.latestOffer,
+    subject: d.spec.subject,
+  };
+  d.tokens += judgment.inputTokens;
+}
+function settle(
+  d: Deal,
+  reason: string,
+  judgment?: PriceJudgment,
+): "done" | "continue" {
   d.pending = undefined;
-  d.stopReason = reason;
-  d.status =
-    d.latestSource && meets(d, d.latestOffer, d.spec.limit) && termsMet(d)
-      ? "needs_approval"
-      : "walked_away";
+  const eligible = quoteEligible(d);
+  const withheld = eligible && judgment?.present === false;
+  if (
+    withheld &&
+    reason === "Target and required terms satisfied" &&
+    d.rounds < d.spec.maxRounds &&
+    d.stalls < 2
+  ) {
+    remember(d, judgment);
+    d.stopReason = undefined;
+    return "continue";
+  }
+  d.stopReason = withheld
+    ? `${reason}. Not presented to the user${
+        judgment?.source === "jev" && judgment.probability !== null
+          ? ` (Jev yes-probability ${judgment.probability.toFixed(2)}, threshold ${judgment.threshold.toFixed(2)})`
+          : ""
+      }.`
+    : reason;
+  d.status = eligible && !withheld ? "needs_approval" : "walked_away";
+  if (eligible) remember(d, judgment);
+  return "done";
 }
 function fmt(d: Deal, n: number) {
   return `${d.spec.currency} ${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
@@ -180,6 +249,7 @@ export function nextDeal(
   input: Deal,
   decision: DealDecision,
   now = new Date(),
+  judgment?: PriceJudgment,
 ): { deal: Deal; event: DealEvent } | null {
   const d = structuredClone(input);
   if (
@@ -188,9 +258,10 @@ export function nextDeal(
   )
     return null;
   let kind = "counter",
-    detail = "";
+    detail = "",
+    draftCounter = false;
   if (+now >= Date.parse(d.spec.deadline)) {
-    finish(d, "Deadline reached");
+    settle(d, "Deadline reached");
     d.status = "walked_away";
     kind = "stopped";
     detail = d.stopReason!;
@@ -202,7 +273,7 @@ export function nextDeal(
     )
       return null;
     if (d.pending.followUps >= d.spec.maxFollowUps) {
-      finish(d, "No substantive reply after follow-up limit");
+      settle(d, "No substantive reply after follow-up limit", judgment);
       kind = "stopped";
       detail = d.stopReason!;
     } else {
@@ -227,19 +298,22 @@ export function nextDeal(
     meets(d, d.latestOffer, d.spec.target) &&
     termsMet(d)
   ) {
-    finish(d, "Target and required terms satisfied");
-    kind = "stopped";
-    detail = d.stopReason!;
+    if (settle(d, "Target and required terms satisfied", judgment) === "done") {
+      kind = "stopped";
+      detail = d.stopReason!;
+    } else draftCounter = true;
   } else if (d.rounds >= d.spec.maxRounds || d.stalls >= 2) {
-    finish(
+    settle(
       d,
       d.rounds >= d.spec.maxRounds
         ? "Round limit reached"
         : "Two replies without price improvement",
+      judgment,
     );
     kind = "stopped";
     detail = d.stopReason!;
-  } else {
+  } else draftCounter = true;
+  if (draftCounter) {
     d.rounds++;
     const tactic = d.rounds === d.spec.maxRounds ? "final" : decision.tactic;
     const fraction =
@@ -287,6 +361,7 @@ export function nextDeal(
       at: d.updatedAt,
       detail,
       draft: d.pending,
+      presentation: d.presentation,
     },
   };
 }
@@ -353,6 +428,7 @@ export function commandDeal(
     );
     d.pending = undefined;
     d.stopReason = undefined;
+    d.presentation = undefined;
     d.resumeStatus = undefined;
     d.status = "active";
     d.latestTerms = d.latestTerms.filter((t) =>
@@ -376,6 +452,7 @@ export function commandDeal(
   } else if (command === "approve") {
     if (
       d.status !== "needs_approval" ||
+      d.presentation?.present === false ||
       !meets(d, d.latestOffer, d.spec.limit) ||
       !termsMet(d) ||
       +now >= Date.parse(d.spec.deadline)
