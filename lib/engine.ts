@@ -10,7 +10,11 @@ import {
   type TacticResult,
 } from "./negotiation";
 import { simulatedQuote, simulatedReply } from "./dealer-simulator";
-import type { PriceJudgment, PresentationRecord } from "./jev";
+import {
+  presentationRecord,
+  type PriceJudgment,
+  type PresentationRecord,
+} from "./jev";
 export type Offer = {
   id: string;
   dealer: string;
@@ -491,15 +495,7 @@ export function advance(
       const withheld = !!best && judgment?.present === false;
       const show = !!best && !withheld;
       if (judgment && best) {
-        m.presentation = {
-          source: judgment.source,
-          present: judgment.present,
-          probability: judgment.probability,
-          model: judgment.model,
-          threshold: judgment.threshold,
-          amount: best.total!,
-          subject: best.car,
-        };
+        m.presentation = presentationRecord(judgment, best.total!, best.car);
         m.tokens += judgment.inputTokens;
       }
       m.selected = show ? best.id : undefined;

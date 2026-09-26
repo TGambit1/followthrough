@@ -28,6 +28,14 @@ export type PresentationRecord = {
   amount: number;
   subject: string;
 };
+export function presentationRecord(
+  judgment: PriceJudgment,
+  amount: number,
+  subject: string,
+): PresentationRecord {
+  const { inputTokens: _, ...record } = judgment;
+  return { ...record, amount, subject };
+}
 export const jevMode = () =>
   process.env.JEV_API_KEY ? "Jev price check" : "Rule price check";
 export function withinLimit(facts: PriceFacts) {
@@ -50,11 +58,15 @@ function readNoul(body: unknown) {
   if (!answer || typeof answer !== "object")
     throw new Error("Jev returned an invalid price decision");
   const noul = (answer as Record<string, unknown>).noul;
-  if (typeof noul !== "number" || !Number.isFinite(noul) || noul < 0 || noul > 1)
+  if (
+    typeof noul !== "number" ||
+    !Number.isFinite(noul) ||
+    noul < 0 ||
+    noul > 1
+  )
     throw new Error("Jev returned an invalid price decision");
   const usage = (nested.usage ?? root.usage) as
-    | { input_tokens?: unknown }
-    | undefined;
+    { input_tokens?: unknown } | undefined;
   const model =
     typeof nested.model === "string"
       ? nested.model

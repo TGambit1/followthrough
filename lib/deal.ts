@@ -1,4 +1,8 @@
-import type { PresentationRecord, PriceJudgment } from "./jev";
+import {
+  presentationRecord,
+  type PresentationRecord,
+  type PriceJudgment,
+} from "./jev";
 export type DealSpec = {
   subject: string;
   counterparty: string;
@@ -202,35 +206,13 @@ export function improvement(d: Deal) {
 }
 function remember(d: Deal, judgment: PriceJudgment | undefined) {
   if (!judgment) return;
-  d.presentation = {
-    source: judgment.source,
-    present: judgment.present,
-    probability: judgment.probability,
-    model: judgment.model,
-    threshold: judgment.threshold,
-    amount: d.latestOffer,
-    subject: d.spec.subject,
-  };
+  d.presentation = presentationRecord(judgment, d.latestOffer, d.spec.subject);
   d.tokens += judgment.inputTokens;
 }
-function settle(
-  d: Deal,
-  reason: string,
-  judgment?: PriceJudgment,
-): "done" | "continue" {
+function settle(d: Deal, reason: string, judgment?: PriceJudgment) {
   d.pending = undefined;
   const eligible = quoteEligible(d);
   const withheld = eligible && judgment?.present === false;
-  if (
-    withheld &&
-    reason === "Target and required terms satisfied" &&
-    d.rounds < d.spec.maxRounds &&
-    d.stalls < 2
-  ) {
-    remember(d, judgment);
-    d.stopReason = undefined;
-    return "continue";
-  }
   d.stopReason = withheld
     ? `${reason}. Not presented to the user${
         judgment?.source === "jev" && judgment.probability !== null
@@ -240,7 +222,22 @@ function settle(
     : reason;
   d.status = eligible && !withheld ? "needs_approval" : "walked_away";
   if (eligible) remember(d, judgment);
-  return "done";
+}
+// The counter for the current round. Counters normally step toward the
+// target, but a price judge can decline an offer that already beats the
+// target; the counter then steps past that offer instead, so a counter is
+// never worse for the user than what is already on the table.
+function counterAmount(d: Deal) {
+  const alreadyMet = !!d.latestSource && meets(d, d.latestOffer, d.spec.target);
+  const step = (from: number, fraction: number) =>
+    Math.round(
+      from * (d.spec.direction === "minimize" ? fraction : 2 - fraction) * 100,
+    ) / 100;
+  if (alreadyMet) return step(d.latestOffer, d.rounds === 1 ? 0.95 : 0.975);
+  return step(
+    d.spec.target,
+    d.rounds === d.spec.maxRounds ? 1 : d.rounds === 1 ? 0.95 : 0.975,
+  );
 }
 function fmt(d: Deal, n: number) {
   return `${d.spec.currency} ${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
@@ -258,8 +255,7 @@ export function nextDeal(
   )
     return null;
   let kind = "counter",
-    detail = "",
-    draftCounter = false;
+    detail = "";
   if (+now >= Date.parse(d.spec.deadline)) {
     settle(d, "Deadline reached");
     d.status = "walked_away";
@@ -298,10 +294,14 @@ export function nextDeal(
     meets(d, d.latestOffer, d.spec.target) &&
     termsMet(d)
   ) {
-    if (settle(d, "Target and required terms satisfied", judgment) === "done") {
+    // A declined price is countered while rounds remain, not settled.
+    if (judgment?.present === false && negotiationCanContinue(d, now))
+      remember(d, judgment);
+    else {
+      settle(d, "Target and required terms satisfied", judgment);
       kind = "stopped";
       detail = d.stopReason!;
-    } else draftCounter = true;
+    }
   } else if (d.rounds >= d.spec.maxRounds || d.stalls >= 2) {
     settle(
       d,
@@ -312,18 +312,11 @@ export function nextDeal(
     );
     kind = "stopped";
     detail = d.stopReason!;
-  } else draftCounter = true;
-  if (draftCounter) {
+  }
+  if (kind === "counter") {
     d.rounds++;
     const tactic = d.rounds === d.spec.maxRounds ? "final" : decision.tactic;
-    const fraction =
-      d.rounds === d.spec.maxRounds ? 1 : d.rounds === 1 ? 0.95 : 0.975;
-    const counter =
-      Math.round(
-        d.spec.target *
-          (d.spec.direction === "minimize" ? fraction : 2 - fraction) *
-          100,
-      ) / 100;
+    const counter = counterAmount(d);
     const clauses = d.spec.requiredTerms.length
       ? `Required terms: ${d.spec.requiredTerms.join("; ")}. `
       : "";
@@ -332,7 +325,9 @@ export function nextDeal(
         ? "Break out every mandatory charge and optional add-on. "
         : tactic === "final"
           ? "Have the person authorized to approve the terms review this final counter. "
-          : "Your current proposal still leaves a gap. ";
+          : meets(d, d.latestOffer, d.spec.target)
+            ? "Your current proposal is not yet one I can recommend. "
+            : "Your current proposal still leaves a gap. ";
     detail = `Regarding ${d.spec.subject}: your current proposal is ${fmt(d, d.latestOffer)}. ${opening}My counter is ${fmt(d, counter)} on the same stated pricing basis. ${clauses}Please send a revised written proposal with all charges and conditions. I am prepared to walk away. This is a negotiation proposal, subject to the buyer or principal’s final review; it is not acceptance or authority to transact.`;
     d.pending = {
       id: `${d.id}:${d.version + 1}`,

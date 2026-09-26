@@ -160,6 +160,27 @@ test("Jev yes presents a target price and Jev no keeps negotiating", () => {
   assert.ok(!withheld.deal.pending!.text.includes("Jev"));
   assert.ok(!withheld.deal.pending!.text.includes("12,000"));
 });
+test("Jev no on a price beating the target never counters worse than the offer", () => {
+  for (const direction of ["minimize", "maximize"] as const) {
+    let d = make(direction);
+    d.spec.maxRounds = 3;
+    const offer = direction === "minimize" ? 9000 : 160000;
+    const worse = (n: number) =>
+      direction === "minimize" ? n >= offer : n <= offer;
+    d = reply(sent(nextDeal(d, decision, now)!.deal), offer);
+    const round2 = nextDeal(d, decision, now, jevNo)!.deal;
+    assert.ok(!worse(round2.pending!.amount), `${direction} round 2`);
+    assert.ok(!round2.pending!.text.includes("leaves a gap"));
+    const final = nextDeal(
+      reply(sent(round2), offer),
+      decision,
+      now,
+      jevNo,
+    )!.deal;
+    assert.equal(final.rounds, 3);
+    assert.ok(!worse(final.pending!.amount), `${direction} final round`);
+  }
+});
 test("Jev no at the round cap does not present an in-limit price", () => {
   let d = make();
   d.spec.maxRounds = 1;
