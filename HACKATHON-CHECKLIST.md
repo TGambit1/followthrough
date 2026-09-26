@@ -28,7 +28,7 @@ Demonstrated or directly testable mechanisms:
 - The model receives numeric tactic outcomes; code enforces private limits, required terms, and approval gates. Jev judges whether an in-limit price is acceptable to present. It cannot override those gates or approve a purchase.
 - The car demo has synthetic counterparties and accelerated days; generic API follow-up timestamps use real time and requires caller-delivered messages/replies.
 
-Current validation: 19 tests passed; production build passed; authenticated live API flow passed using synthetic replies. Nine deterministic car cases had zero constraint violations; comparable cases showed $1,300 more reduction than a one-round baseline. Before submission, record these results and an actual process restart. Describe the API as price-and-terms negotiation across domains, not a guarantee that it can negotiate literally anything.
+Current validation (rerun September 26 after the Tony and Jev merge): 29 tests passed; production build passed; authenticated live API flow passed using synthetic replies. Nine deterministic car cases had zero constraint violations; comparable cases showed $1,300 more reduction than a one-round baseline. Before submission, record these results and an actual process restart. Describe the API as price-and-terms negotiation across domains, not a guarantee that it can negotiate literally anything.
 
 ## Recommended resources, not mandatory integrations
 

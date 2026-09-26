@@ -16,7 +16,7 @@ Tony is a persistent negotiation API that personal assistants call to get their 
 
 ## Evidence available
 
-- 19 automated tests passing locally.
+- 29 automated tests passing locally (rerun September 26 after the Tony and Jev merge).
 - Production build passing locally.
 - Live Atlas and GPT-5.6 Luna API flow passed: authentication, idempotent creation, conflicting replay rejection, two counters, recovery, required terms, and approval.
 - Expanded car workflow passed through HTTP with the live model and Atlas.
