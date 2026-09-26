@@ -15,36 +15,36 @@ export function NegotiationCard({
   return (
     <div className="negotiation-box">
       <div className="negotiation-heading">
-        <strong>Negotiation desk</strong>
+        <strong>The table</strong>
         <span>
           Round {n.rounds}/{policy?.maxRounds ?? 4} · {n.followUps} follow-ups
         </span>
       </div>
       <div className="negotiation-stats">
         <span>
-          Our counter{" "}
-          <b>{n.lastCounter ? money(n.lastCounter) : "Preparing"}</b>
+          Our number{" "}
+          <b>{n.lastCounter ? money(n.lastCounter) : "Coming"}</b>
         </span>
         <span>
-          Quote reduction{" "}
+          Off the top{" "}
           <b>{money((o.originalTotal ?? o.total ?? 0) - (o.total ?? 0))}</b>
         </span>
       </div>
       {n.lastBuyerMessage && (
         <details open={!!n.pending}>
-          <summary>Our latest message · simulated</summary>
+          <summary>What we told them · simulated</summary>
           <blockquote>{n.lastBuyerMessage}</blockquote>
         </details>
       )}
       {n.lastDealerMessage && (
         <details>
-          <summary>Dealer’s latest response · simulated</summary>
+          <summary>What they came back with · simulated</summary>
           <blockquote>{n.lastDealerMessage}</blockquote>
         </details>
       )}
       {n.pending ? (
         <p className="pending-reply">
-          ◷ Awaiting round {n.pending.round} reply · next follow-up day{" "}
+          Waiting on round {n.pending.round} · next nudge, day{" "}
           {n.pending.followUpDueDay}
           {n.pending.followUpDueDay <= day ? " (due)" : ""}
         </p>
@@ -53,8 +53,8 @@ export function NegotiationCard({
       ) : (
         <p className="pending-reply">
           {o.cleanTitle === false
-            ? "Walk away: title failed."
-            : "Continue until target or stop limit."}
+            ? "Title’s dirty. We walk."
+            : "We stay until our number, or we walk."}
         </p>
       )}
     </div>
